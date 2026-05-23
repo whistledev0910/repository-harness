@@ -97,10 +97,11 @@ jobs:
 
       - name: Create release if needed
         run: |
-          gh release view "$RELEASE_TAG" >/dev/null 2>&1 ||
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 ||
             gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
               --title "$RELEASE_TAG" \
               --notes "Harness CLI release $RELEASE_TAG"
 
       - name: Upload release assets
-        run: gh release upload "$RELEASE_TAG" dist/harness-cli-* --clobber
+        run: gh release upload "$RELEASE_TAG" dist/harness-cli-* --repo "$GITHUB_REPOSITORY" --clobber
