@@ -174,6 +174,31 @@ Implementation prompts do not go straight to code. They first pass through
 feature intake, become story-sized work when needed, and then carry both product
 validation and harness maintenance expectations.
 
+## Tool Registry
+
+The harness can use optional external tools (linters, code-graph servers,
+deploy checks) without depending on any of them. You register a tool as a
+provider of a *capability*, the harness scans whether it is actually present,
+and a workflow step uses whatever is equipped — an absent tool is a clean skip,
+never a failure.
+
+```bash
+# register a tool as a provider of a capability
+scripts/bin/harness-cli tool register --name deploy-check --kind cli \
+  --capability deploy-verification --command ./scripts/deploy-check.sh \
+  --responsibility Verification --description "Verify deploy health before release"
+
+# scan presence (writes present/missing/unknown)
+scripts/bin/harness-cli tool check
+
+# a step looks up what is equipped for a purpose
+scripts/bin/harness-cli query tools --capability deploy-verification --status present
+```
+
+Kinds (`cli`, `binary`, `mcp`, `skill`, `http`) make it agent-generic: each
+agent runtime uses what it can orchestrate. See `docs/TOOL_REGISTRY.md` for the
+full model, the degrade ladder, and how to wire a tool into a flow step.
+
 ## Current State
 
 This repository is in Harness v0.

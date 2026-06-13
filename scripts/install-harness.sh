@@ -206,10 +206,13 @@ This repo uses Harness. Before work, read:
 - `docs/FEATURE_INTAKE.md`
 - `docs/ARCHITECTURE.md`
 - `docs/CONTEXT_RULES.md`
+- `docs/TOOL_REGISTRY.md`
 - `scripts/bin/harness-cli query matrix`
 
 Use the Rust Harness CLI at `scripts/bin/harness-cli` as the main operational
-tool.
+tool. Before a step that could use an external tool, run
+`scripts/bin/harness-cli query tools --capability <name> --status present` to
+see what is equipped; an absent capability is a clean skip.
 <!-- HARNESS:END -->
 EOF
 }
