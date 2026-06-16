@@ -203,6 +203,7 @@ version = "0.1.10"
 dependencies = [
  "clap",
  "rusqlite",
+ "serde_json",
  "tempfile",
  "thiserror",
 ]
