@@ -174,6 +174,28 @@ Implementation prompts do not go straight to code. They first pass through
 feature intake, become story-sized work when needed, and then carry both product
 validation and harness maintenance expectations.
 
+## Try Harness Symphony
+
+Harness Symphony is the local runner for Harness stories. It prepares an
+isolated run workspace, passes an explicit contract to an agent, collects
+`SUMMARY.md` and `RESULT.json`, and keeps durable Harness updates reviewable
+through semantic changesets.
+
+Start here:
+
+- `docs/SYMPHONY_QUICKSTART.md`: first-run instructions and the daily command
+  loop.
+- `docs/SYMPHONY_SCOPE.md`: detailed design and implementation scope.
+
+The usual first commands are:
+
+```bash
+cargo build -p harness-symphony
+target/debug/harness-symphony doctor
+target/debug/harness-symphony work list
+target/debug/harness-symphony run <story-id> --prepare-only
+```
+
 ## Tool Registry
 
 The harness can use optional external tools (linters, code-graph servers,

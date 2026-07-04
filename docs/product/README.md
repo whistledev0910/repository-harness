@@ -10,6 +10,12 @@ domains that actually exist in that spec, for example `overview.md`,
 Do not create domain files before the spec just to fill the folder. Empty
 structure is healthier than fake product truth.
 
+## Current Product Contracts
+
+- `symphony-web-ui-controller.md` - Local Web UI controller for Harness Symphony
+  task execution, review, dependency blocking, Codex event logs, PR review, and
+  sync.
+
 ## Update Rule
 
 When behavior changes:

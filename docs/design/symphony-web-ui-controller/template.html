@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Symphony Controller Live Dashboard</title>
+  <style>
+    :root {
+      --bg:           #ffffff;
+      --surface:      #f6f5f4;
+      --surface-warm: var(--surface);
+      --fg:   rgba(0, 0, 0, 0.95);
+      --fg-2: #31302e;
+      --muted: #615d59;
+      --meta:  #a39e98;
+      --border:      rgba(0, 0, 0, 0.1);
+      --border-soft: rgba(0, 0, 0, 0.06);
+      --accent:        #0075de;
+      --accent-on:     #ffffff;
+      --accent-hover:  #005bab;
+      --accent-active: color-mix(in oklab, var(--accent), black 14%);
+      --success: #1aae39;
+      --warn:    #dd5b00;
+      --danger:  #dc2626;
+      --font-display: "NotionInter", "Inter", -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+      --font-body:    "NotionInter", "Inter", -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+      --font-mono:    ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+      --text-xs:   12px;
+      --text-sm:   14px;
+      --text-base: 16px;
+      --text-lg:   20px;
+      --text-xl:   26px;
+      --text-2xl:  40px;
+      --text-3xl:  48px;
+      --text-4xl:  64px;
+      --leading-body:     1.5;
+      --leading-tight:    1.00;
+      --tracking-display: -0.033em;
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-5:  20px;
+      --space-6:  24px;
+      --space-8:  32px;
+      --space-12: 48px;
+      --section-y-desktop: 80px;
+      --section-y-tablet:  48px;
+      --section-y-phone:   32px;
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --radius-pill: 9999px;
+      --elev-flat:   none;
+      --elev-ring:   0 0 0 1px var(--border);
+      --elev-raised:
+        rgba(0, 0, 0, 0.04) 0px 4px 18px,
+        rgba(0, 0, 0, 0.027) 0px 2px 7.85px,
+        rgba(0, 0, 0, 0.02) 0px 0.8px 2.93px,
+        rgba(0, 0, 0, 0.01) 0px 0.175px 1.04px;
+      --focus-ring: 0 0 0 3px rgba(9, 127, 232, 0.3);
+      --motion-fast:   150ms;
+      --motion-base:   200ms;
+      --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+      --container-max:            1200px;
+      --container-gutter-desktop: 24px;
+      --container-gutter-tablet:  16px;
+      --container-gutter-phone:   12px;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); color: var(--fg); font-family: var(--font-body); }
+    body { margin: 0; min-width: 320px; background: var(--bg); }
+    button, label { font: inherit; }
+    .shell { min-height: 100vh; padding: clamp(var(--space-3), 2vw, var(--space-6)); }
+    .topbar {
+      display: block;
+      max-width: 1720px;
+      margin: 0 auto var(--space-2);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+    }
+    .eyebrow {
+      margin: 0 0 var(--space-2);
+      color: var(--muted);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.075em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 720px;
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.1vw, 40px);
+      line-height: 1.02;
+      letter-spacing: var(--tracking-display);
+    }
+    .lead {
+      max-width: 760px;
+      margin: var(--space-2) 0 0;
+      color: var(--muted);
+      font-size: var(--text-base);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    .intent-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      padding: var(--space-4);
+      box-shadow: var(--elev-raised);
+    }
+    .intent-card strong {
+      display: block;
+      font-size: var(--text-base);
+      line-height: 1.25;
+    }
+    .intent-card p {
+      margin: var(--space-2) 0 0;
+      color: var(--muted);
+      font-size: var(--text-sm);
+      line-height: 1.45;
+    }
+    .api-chip, .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 22px;
+      border-radius: var(--radius-pill);
+      padding: 0 var(--space-2);
+      color: var(--accent);
+      background: color-mix(in oklab, var(--accent), var(--bg) 91%);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .summary {
+      max-width: 1720px;
+      margin: 0 auto var(--space-3);
+      display: grid;
+      grid-template-columns: 1.2fr .9fr .9fr 1fr;
+      gap: var(--space-2);
+    }
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      background: var(--bg);
+    }
+    .metric.primary { background: var(--surface); }
+    .metric span { color: var(--muted); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.075em; text-transform: uppercase; }
+    .metric strong { display: block; margin-top: var(--space-1); font-size: var(--text-lg); line-height: 1.12; }
+    .metric p { margin: var(--space-1) 0 0; color: var(--muted); font-size: var(--text-xs); line-height: 1.35; }
+    .workspace {
+      max-width: 1720px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
+      gap: var(--space-4);
+      align-items: start;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(176px, 1fr));
+      gap: var(--space-3);
+      min-width: 0;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      min-height: 390px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: color-mix(in oklab, var(--surface), var(--bg) 34%);
+      overflow: hidden;
+    }
+    .column-head {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding: 0 var(--space-3);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .column-title { margin: 0; font-size: var(--text-sm); font-weight: 700; }
+    .cards {
+      display: grid;
+      align-content: start;
+      gap: var(--space-2);
+      flex: 1;
+      padding: var(--space-2);
+      overflow: auto;
+    }
+    .select { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; }
+    .card {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      padding: var(--space-3);
+      text-align: left;
+      box-shadow: var(--elev-flat);
+      transition: border var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+      cursor: pointer;
+    }
+    .card:hover { border-color: var(--accent); box-shadow: var(--elev-raised); }
+    .card:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--focus-ring), var(--elev-raised);
+    }
+    #task-us056:checked ~ .workspace label[for="task-us056"],
+    #task-us057:checked ~ .workspace label[for="task-us057"],
+    #task-us058:checked ~ .workspace label[for="task-us058"],
+    #task-us059:checked ~ .workspace label[for="task-us059"],
+    #task-us060:checked ~ .workspace label[for="task-us060"],
+    #task-us061:checked ~ .workspace label[for="task-us061"],
+    #task-us062:checked ~ .workspace label[for="task-us062"] {
+      border-color: var(--accent);
+      box-shadow: var(--elev-raised);
+      transform: translateY(-1px);
+    }
+    .card.blocked { background: color-mix(in oklab, var(--warn), var(--bg) 96%); }
+    .card.attention { background: color-mix(in oklab, var(--danger), var(--bg) 96%); }
+    .card.done { opacity: .78; }
+    .card-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+    .id { color: var(--muted); font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 700; }
+    .card h3 { margin: var(--space-2) 0; color: var(--fg); font-size: var(--text-sm); line-height: 1.28; letter-spacing: 0; }
+    .card p { margin: 0; color: var(--muted); font-size: var(--text-xs); line-height: 1.45; }
+    .move-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      margin-top: var(--space-3);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--border-soft);
+    }
+    .move-row span {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 2px var(--space-2);
+      color: var(--muted);
+      background: var(--bg);
+      font-size: var(--text-xs);
+      font-weight: 600;
+    }
+    .dependency {
+      margin: var(--space-4) 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg);
+      padding: var(--space-4);
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .section-head h2, .detail h2 { margin: 0; font-size: var(--text-xl); line-height: 1.1; letter-spacing: 0; }
+    .section-head p { margin: 0; color: var(--muted); font-size: var(--text-sm); }
+    .graph {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: var(--space-2);
+    }
+    .node {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      background: var(--surface);
+      min-height: 86px;
+    }
+    .node strong { display: block; font-family: var(--font-mono); font-size: var(--text-xs); }
+    .node span { display: block; margin-top: var(--space-1); color: var(--muted); font-size: var(--text-xs); line-height: 1.35; }
+    .node.active { border-color: var(--accent); background: color-mix(in oklab, var(--accent), var(--bg) 94%); }
+    .node.blocked { border-color: color-mix(in oklab, var(--warn), var(--border) 45%); }
+    .detail {
+      display: none;
+      position: sticky;
+      top: var(--space-4);
+      width: var(--detail-width, clamp(420px, 36vw, 720px));
+      min-width: 280px;
+      max-width: min(860px, 68vw);
+      height: calc(100dvh - 220px);
+      max-height: calc(100dvh - 48px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg);
+      box-shadow: var(--elev-raised);
+      overflow: auto;
+      isolation: isolate;
+    }
+    .splitter {
+      display: none;
+      align-self: stretch;
+      width: 14px;
+      min-height: calc(100dvh - 220px);
+      border: 0;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background:
+        linear-gradient(var(--meta), var(--meta)) 5px 50% / 2px 58px no-repeat,
+        linear-gradient(var(--meta), var(--meta)) 8px 50% / 2px 58px no-repeat,
+        var(--surface);
+      cursor: col-resize;
+      touch-action: none;
+    }
+    .splitter:hover,
+    .splitter:focus-visible,
+    .workspace.is-resizing .splitter {
+      background:
+        linear-gradient(var(--accent), var(--accent)) 5px 50% / 2px 72px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) 8px 50% / 2px 72px no-repeat,
+        color-mix(in oklab, var(--accent), var(--surface) 90%);
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+    .panel { display: none; }
+    #task-us056:checked ~ .workspace .panel.us056,
+    #task-us057:checked ~ .workspace .panel.us057,
+    #task-us058:checked ~ .workspace .panel.us058,
+    #task-us059:checked ~ .workspace .panel.us059,
+    #task-us060:checked ~ .workspace .panel.us060,
+    #task-us061:checked ~ .workspace .panel.us061,
+    #task-us062:checked ~ .workspace .panel.us062 { display: block; }
+    .detail-main { padding: var(--space-4); border-bottom: 1px solid var(--border); }
+    .detail-title { margin: var(--space-3) 0 var(--space-2); font-size: var(--text-xl); line-height: 1.15; letter-spacing: -0.012em; }
+    .reason { color: var(--muted); line-height: 1.5; margin: 0; }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); margin-top: var(--space-4); }
+    .field { border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); }
+    .field span { display: block; color: var(--muted); font-size: var(--text-xs); }
+    .field strong { display: block; margin-top: var(--space-1); font-size: var(--text-sm); word-break: break-word; }
+    .detail-section { padding: var(--space-4); border-bottom: 1px solid var(--border); }
+    .detail-section:last-child { border-bottom: 0; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+    .empty { color: var(--meta); font-size: var(--text-sm); }
+    .log { max-height: 260px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+    .event { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: var(--space-2); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--border-soft); font-size: var(--text-xs); }
+    .event:last-child { border-bottom: 0; }
+    .event time { color: var(--muted); font-family: var(--font-mono); }
+    .event strong { display: block; margin-bottom: 2px; font-family: var(--font-mono); }
+    .review-list { margin: var(--space-2) 0 0; padding: 0; list-style: none; display: grid; gap: var(--space-2); }
+    .review-list li { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-2); font-size: var(--text-xs); color: var(--muted); }
+    .actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: 38px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0 var(--space-4);
+      background: color-mix(in oklab, var(--fg), transparent 94%);
+      color: var(--fg);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+    }
+    .btn:hover { background: color-mix(in oklab, var(--fg), transparent 90%); }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+    .btn.primary { background: var(--accent); color: var(--accent-on); }
+    .btn.primary:hover { background: var(--accent-hover); }
+    .btn[aria-disabled="true"], .btn:disabled { color: var(--meta); cursor: not-allowed; opacity: .62; transform: none; }
+    .btn.primary:disabled { background: color-mix(in oklab, var(--accent), var(--bg) 82%); color: var(--muted); }
+    .close-detail {
+      position: sticky;
+      top: var(--space-3);
+      float: right;
+      z-index: 2;
+      width: 34px;
+      min-width: 34px;
+      min-height: 34px;
+      margin: var(--space-3);
+      padding: 0;
+      background: var(--bg);
+      box-shadow: var(--elev-ring);
+    }
+    .source { max-width: 1720px; margin: var(--space-4) auto 0; color: var(--muted); font-size: var(--text-xs); line-height: 1.5; }
+    @media (max-width: 1366px) {
+      .workspace { grid-template-columns: 1fr; }
+      .detail { position: static; }
+      .board { overflow-x: auto; padding-bottom: var(--space-2); }
+      .column { min-width: 220px; }
+    }
+    @media (max-width: 820px) {
+      .topbar { grid-template-columns: 1fr; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .graph { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px) {
+      .shell { padding: var(--space-3); }
+      .summary { grid-template-columns: 1fr 1fr; }
+      .board { display: grid; grid-template-columns: 1fr; overflow: visible; }
+      .column { min-width: 0; min-height: auto; }
+      .fields { grid-template-columns: 1fr; }
+      .graph { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell" data-od-id="path-0" data-od-source-path="path-0">
+    <input class="select" type="radio" name="selected-task" id="task-us056">
+    <input class="select" type="radio" name="selected-task" id="task-us057">
+    <input class="select" type="radio" name="selected-task" id="task-us058">
+    <input class="select" type="radio" name="selected-task" id="task-us059">
+    <input class="select" type="radio" name="selected-task" id="task-us060">
+    <input class="select" type="radio" name="selected-task" id="task-us061">
+    <input class="select" type="radio" name="selected-task" id="task-us062">
+
+    <style>
+      [data-od-id="path-0"] .notion-layout {
+        max-width: 1720px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 224px minmax(0, 1fr);
+        gap: var(--space-4);
+        align-items: start;
+      }
+      [data-od-id="path-0"] .notion-sidebar {
+        position: sticky;
+        top: var(--space-4);
+        min-height: calc(100vh - 48px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+        padding: var(--space-3);
+      }
+      [data-od-id="path-0"] .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2);
+        margin-bottom: var(--space-3);
+        color: var(--fg);
+        font-size: var(--text-sm);
+        font-weight: 700;
+      }
+      [data-od-id="path-0"] .brand-mark {
+        display: inline-grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+      }
+      [data-od-id="path-0"] .side-group {
+        display: grid;
+        gap: 2px;
+        padding: var(--space-2) 0;
+        border-top: 1px solid var(--border-soft);
+      }
+      [data-od-id="path-0"] .side-label {
+        margin: 0;
+        padding: var(--space-2);
+        color: var(--meta);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+      }
+      [data-od-id="path-0"] .side-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 34px;
+        border-radius: var(--radius-sm);
+        padding: 0 var(--space-2);
+        color: var(--muted);
+        font-size: var(--text-sm);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      [data-od-id="path-0"] .side-item.active,
+      [data-od-id="path-0"] .side-item:hover {
+        background: var(--bg);
+        color: var(--fg);
+      }
+      [data-od-id="path-0"] .side-count {
+        color: var(--meta);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: 700;
+      }
+      [data-od-id="path-0"] .side-disclosure {
+        border-radius: var(--radius-sm);
+      }
+      [data-od-id="path-0"] .side-disclosure summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 34px;
+        border-radius: var(--radius-sm);
+        padding: 0 var(--space-2);
+        color: var(--muted);
+        font-size: var(--text-sm);
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+      }
+      [data-od-id="path-0"] .side-disclosure summary::-webkit-details-marker {
+        display: none;
+      }
+      [data-od-id="path-0"] .side-disclosure summary:hover,
+      [data-od-id="path-0"] .side-disclosure summary:focus-visible,
+      [data-od-id="path-0"] .side-disclosure[open] summary {
+        background: var(--bg);
+        color: var(--fg);
+        outline: none;
+      }
+      [data-od-id="path-0"] .side-deps {
+        display: grid;
+        gap: var(--space-1);
+        padding: var(--space-1) var(--space-2) var(--space-2);
+      }
+      [data-od-id="path-0"] .side-dep {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-2);
+        color: var(--muted);
+        font-size: var(--text-xs);
+        line-height: 1.35;
+      }
+      [data-od-id="path-0"] .main-pane {
+        min-width: 0;
+      }
+      [data-od-id="path-0"] .main-pane .topbar,
+      [data-od-id="path-0"] .main-pane .summary,
+      [data-od-id="path-0"] .main-pane .workspace,
+      [data-od-id="path-0"] .main-pane .source {
+        max-width: none;
+      }
+      [data-od-id="path-0"] .workspace {
+        grid-template-columns: minmax(0, 1fr);
+        transition: grid-template-columns var(--motion-base) var(--ease-standard);
+        min-height: calc(100dvh - 220px);
+        --detail-width: clamp(420px, 36vw, 720px);
+      }
+      [data-od-id="path-0"] .workspace > div {
+        min-width: 0;
+      }
+      [data-od-id="path-0"] #task-us056:checked ~ .notion-layout label[for="task-us056"],
+      [data-od-id="path-0"] #task-us057:checked ~ .notion-layout label[for="task-us057"],
+      [data-od-id="path-0"] #task-us058:checked ~ .notion-layout label[for="task-us058"],
+      [data-od-id="path-0"] #task-us059:checked ~ .notion-layout label[for="task-us059"],
+      [data-od-id="path-0"] #task-us060:checked ~ .notion-layout label[for="task-us060"],
+      [data-od-id="path-0"] #task-us061:checked ~ .notion-layout label[for="task-us061"],
+      [data-od-id="path-0"] #task-us062:checked ~ .notion-layout label[for="task-us062"] {
+        border-color: var(--accent);
+        box-shadow: var(--elev-raised);
+        transform: translateY(-1px);
+      }
+      [data-od-id="path-0"] #task-us056:checked ~ .notion-layout .panel.us056,
+      [data-od-id="path-0"] #task-us057:checked ~ .notion-layout .panel.us057,
+      [data-od-id="path-0"] #task-us058:checked ~ .notion-layout .panel.us058,
+      [data-od-id="path-0"] #task-us059:checked ~ .notion-layout .panel.us059,
+      [data-od-id="path-0"] #task-us060:checked ~ .notion-layout .panel.us060,
+      [data-od-id="path-0"] #task-us061:checked ~ .notion-layout .panel.us061,
+      [data-od-id="path-0"] #task-us062:checked ~ .notion-layout .panel.us062 {
+        display: block;
+      }
+      [data-od-id="path-0"] #task-us056:checked ~ .notion-layout .workspace,
+      [data-od-id="path-0"] #task-us057:checked ~ .notion-layout .workspace,
+      [data-od-id="path-0"] #task-us058:checked ~ .notion-layout .workspace,
+      [data-od-id="path-0"] #task-us059:checked ~ .notion-layout .workspace,
+      [data-od-id="path-0"] #task-us060:checked ~ .notion-layout .workspace,
+      [data-od-id="path-0"] #task-us061:checked ~ .notion-layout .workspace,
+      [data-od-id="path-0"] #task-us062:checked ~ .notion-layout .workspace {
+        display: grid;
+        align-items: stretch;
+        grid-template-columns: minmax(360px, 1fr) 14px minmax(280px, var(--detail-width));
+        gap: var(--space-3);
+        min-height: calc(100dvh - 220px);
+      }
+      [data-od-id="path-0"] #task-us056:checked ~ .notion-layout .workspace > div,
+      [data-od-id="path-0"] #task-us057:checked ~ .notion-layout .workspace > div,
+      [data-od-id="path-0"] #task-us058:checked ~ .notion-layout .workspace > div,
+      [data-od-id="path-0"] #task-us059:checked ~ .notion-layout .workspace > div,
+      [data-od-id="path-0"] #task-us060:checked ~ .notion-layout .workspace > div,
+      [data-od-id="path-0"] #task-us061:checked ~ .notion-layout .workspace > div,
+      [data-od-id="path-0"] #task-us062:checked ~ .notion-layout .workspace > div {
+        min-width: 0;
+      }
+      [data-od-id="path-0"] #task-us056:checked ~ .notion-layout .splitter,
+      [data-od-id="path-0"] #task-us057:checked ~ .notion-layout .splitter,
+      [data-od-id="path-0"] #task-us058:checked ~ .notion-layout .splitter,
+      [data-od-id="path-0"] #task-us059:checked ~ .notion-layout .splitter,
+      [data-od-id="path-0"] #task-us060:checked ~ .notion-layout .splitter,
+      [data-od-id="path-0"] #task-us061:checked ~ .notion-layout .splitter,
+      [data-od-id="path-0"] #task-us062:checked ~ .notion-layout .splitter {
+        display: block;
+      }
+      [data-od-id="path-0"] #task-us056:checked ~ .notion-layout .detail,
+      [data-od-id="path-0"] #task-us057:checked ~ .notion-layout .detail,
+      [data-od-id="path-0"] #task-us058:checked ~ .notion-layout .detail,
+      [data-od-id="path-0"] #task-us059:checked ~ .notion-layout .detail,
+      [data-od-id="path-0"] #task-us060:checked ~ .notion-layout .detail,
+      [data-od-id="path-0"] #task-us061:checked ~ .notion-layout .detail,
+      [data-od-id="path-0"] #task-us062:checked ~ .notion-layout .detail {
+        display: block;
+        width: auto;
+      }
+      @media (max-width: 1180px) {
+        [data-od-id="path-0"] #task-us056:checked ~ .notion-layout .workspace,
+        [data-od-id="path-0"] #task-us057:checked ~ .notion-layout .workspace,
+        [data-od-id="path-0"] #task-us058:checked ~ .notion-layout .workspace,
+        [data-od-id="path-0"] #task-us059:checked ~ .notion-layout .workspace,
+        [data-od-id="path-0"] #task-us060:checked ~ .notion-layout .workspace,
+        [data-od-id="path-0"] #task-us061:checked ~ .notion-layout .workspace,
+        [data-od-id="path-0"] #task-us062:checked ~ .notion-layout .workspace {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+        }
+        [data-od-id="path-0"] .detail {
+          width: auto;
+          min-width: 0;
+          max-width: none;
+          height: auto;
+          max-height: none;
+          border-left: 1px solid var(--border);
+        }
+        [data-od-id="path-0"] .splitter { display: none !important; }
+      }
+      @media (max-width: 900px) {
+        [data-od-id="path-0"] .notion-layout {
+          grid-template-columns: 1fr;
+        }
+        [data-od-id="path-0"] .notion-sidebar {
+          position: static;
+          min-height: 0;
+        }
+        [data-od-id="path-0"] .side-group {
+          display: flex;
+          overflow-x: auto;
+          gap: var(--space-1);
+        }
+        [data-od-id="path-0"] .side-label {
+          display: none;
+        }
+        [data-od-id="path-0"] .side-item {
+          flex: 0 0 auto;
+          min-width: max-content;
+          border: 1px solid var(--border-soft);
+          background: var(--bg);
+        }
+        [data-od-id="path-0"] .side-disclosure {
+          flex: 0 0 auto;
+          min-width: 220px;
+          border: 1px solid var(--border-soft);
+          background: var(--bg);
+        }
+      }
+    </style>
+
+    <div class="notion-layout">
+      <aside class="notion-sidebar" aria-label="Workspace navigation">
+        <div class="sidebar-brand"><span class="brand-mark">S</span><span>Symphony</span></div>
+        <nav class="side-group" aria-label="Primary">
+          <p class="side-label">Workspace</p>
+          <a class="side-item active" href="#board"><span>Work board</span><span class="side-count">7</span></a>
+          <details class="side-disclosure" id="dependencies">
+            <summary><span>Dependencies</span><span class="side-count">2</span></summary>
+            <div class="side-deps" aria-label="Blocked work">
+              <div class="side-dep"><span>US-057</span><span>waits for US-056</span></div>
+              <div class="side-dep"><span>US-059</span><span>waits for 2</span></div>
+            </div>
+          </details>
+          <a class="side-item" href="#logs"><span>Run logs</span><span class="side-count">live</span></a>
+        </nav>
+        <nav class="side-group" aria-label="Status">
+          <p class="side-label">Status</p>
+          <a class="side-item" href="#board"><span>Ready</span><span class="side-count">2</span></a>
+          <a class="side-item" href="#board"><span>Blocked</span><span class="side-count">2</span></a>
+          <a class="side-item" href="#board"><span>Review</span><span class="side-count">1</span></a>
+        </nav>
+      </aside>
+
+      <div class="main-pane">
+        <header class="topbar">
+          <div>
+            <h1>Symphony work board</h1>
+            <p class="lead">Kanban, blockers, and run logs in one focused view.</p>
+          </div>
+        </header>
+
+        <section class="summary" aria-label="Dashboard summary">
+          <article class="metric primary"><span>Active run</span><strong>US-056</strong><p>run_056 is the only task allowed in progress.</p></article>
+          <article class="metric"><span>Safe to start</span><strong>2 ready</strong><p>US-058 and US-062 have no incomplete blockers.</p></article>
+          <article class="metric"><span>Avoid for now</span><strong>2 blocked</strong><p>Blocked work explains its missing dependency before action.</p></article>
+          <article class="metric"><span>Needs decision</span><strong>1 review</strong><p>Merge PR first, then approve local sync.</p></article>
+        </section>
+
+    <div id="board" class="workspace">
+      <div>
+        <section class="board" aria-label="Kanban work board" style="min-height: calc(100dvh - 220px); align-items: stretch;">
+          <section class="column">
+            <div class="column-head"><h2 class="column-title">Ready</h2><span class="pill">2</span></div>
+            <div class="cards">
+              <label class="card" for="task-us058">
+                <div class="card-row"><span class="id">US-058</span><span class="pill">configured</span></div>
+                <h3>Work Detail And Live Codex Logs</h3>
+                <p>ready</p>
+                <div class="move-row"><span>Start</span><span>Move to In Progress</span></div>
+              </label>
+              <label class="card" for="task-us062">
+                <div class="card-row"><span class="id">US-062</span><span class="pill">tiny</span></div>
+                <h3>Local Backend Smoke</h3>
+                <p>ready</p>
+                <div class="move-row"><span>Start</span><span>Move to In Progress</span></div>
+              </label>
+            </div>
+          </section>
+          <section class="column">
+            <div class="column-head"><h2 class="column-title">Blocked</h2><span class="pill">2</span></div>
+            <div class="cards">
+              <label class="card blocked" for="task-us057">
+                <div class="card-row"><span class="id">US-057</span><span class="pill">blocked</span></div>
+                <h3>Dependency Graph View</h3>
+                <p>waiting for US-056</p>
+                <div class="move-row"><span>Start disabled</span><span>Blocked by US-056</span></div>
+              </label>
+              <label class="card blocked" for="task-us059">
+                <div class="card-row"><span class="id">US-059</span><span class="pill">blocked</span></div>
+                <h3>Review Surface Density Pass</h3>
+                <p>waiting for US-057, US-058</p>
+                <div class="move-row"><span>Start disabled</span><span>2 blockers</span></div>
+              </label>
+            </div>
+          </section>
+          <section class="column">
+            <div class="column-head"><h2 class="column-title">In Progress</h2><span class="pill">1</span></div>
+            <div class="cards">
+              <label class="card" for="task-us056">
+                <div class="card-row"><span class="id">US-056</span><span class="pill">active</span></div>
+                <h3>Simplify Kanban-First Controller</h3>
+                <p>active run run_056</p>
+                <div class="move-row"><span>Live logs</span><span>One active run</span></div>
+              </label>
+            </div>
+          </section>
+          <section class="column">
+            <div class="column-head"><h2 class="column-title">Review</h2><span class="pill">1</span></div>
+            <div class="cards">
+              <label class="card" for="task-us060">
+                <div class="card-row"><span class="id">US-060</span><span class="pill">PR</span></div>
+                <h3>Approve Sync From Review</h3>
+                <p>review pull request</p>
+                <div class="move-row"><span>Mark merged</span><span>Approve sync</span></div>
+              </label>
+            </div>
+          </section>
+          <section class="column">
+            <div class="column-head"><h2 class="column-title">Needs Attention</h2><span class="pill">1</span></div>
+            <div class="cards">
+              <label class="card attention" for="task-us061">
+                <div class="card-row"><span class="id">US-061</span><span class="pill">retry</span></div>
+                <h3>Retry Failed App Server Run</h3>
+                <p>Inspect run artifacts and retry when safe.</p>
+                <div class="move-row"><span>Inspect</span><span>Retry guarded</span></div>
+              </label>
+            </div>
+          </section>
+          <section class="column">
+            <div class="column-head"><h2 class="column-title">Done</h2><span class="pill">4</span></div>
+            <div class="cards">
+              <article class="card done"><div class="card-row"><span class="id">US-054</span><span class="pill">done</span></div><h3>Task Hierarchy Rendering</h3><p>story implemented</p></article>
+              <article class="card done"><div class="card-row"><span class="id">US-055</span><span class="pill">done</span></div><h3>PR Merged Gate Before Sync</h3><p>synced locally</p></article>
+              <article class="card done"><div class="card-row"><span class="id">US-050</span><span class="pill">done</span></div><h3>Run Start And Codex Event API</h3><p>story implemented</p></article>
+              <article class="card done"><div class="card-row"><span class="id">US-051</span><span class="pill">done</span></div><h3>Review Surface For Run Artifacts</h3><p>story implemented</p></article>
+            </div>
+          </section>
+        </section>
+
+      </div>
+
+      <div class="splitter" role="separator" tabindex="0" aria-label="Resize selected work detail panel" aria-orientation="vertical"></div>
+
+      <aside class="detail" aria-label="Selected work detail">
+        <button
+          type="button"
+          class="btn close-detail"
+          aria-label="Close selected work detail"
+          data-close-detail
+        >
+          ×
+        </button>
+        <section class="panel us056">
+          <div class="detail-main">
+            <div class="card-row"><span class="pill">In Progress</span><span class="id">US-056</span></div>
+            <h2 class="detail-title">Simplify Kanban-First Controller</h2>
+            <p class="reason">active run run_056</p>
+            <div class="fields"><div class="field"><span>Lane</span><strong>normal</strong></div><div class="field"><span>Proof</span><strong>configured</strong></div><div class="field"><span>Run</span><strong>run_056</strong></div><div class="field"><span>Children</span><strong>US-056A, US-056B</strong></div></div>
+            <div class="actions"><button class="btn primary" type="button" disabled>One run active</button><button class="btn" type="button">Open artifacts</button></div>
+          </div>
+          <div class="detail-section"><div class="section-head"><h2>Dependencies</h2></div><p class="eyebrow">Blocked by</p><div class="chip-row"><span class="pill">US-054</span><span class="pill">US-055</span></div><p class="eyebrow" style="margin-top: var(--space-4)">Unblocks</p><div class="chip-row"><span class="pill">US-057</span><span class="pill">US-058</span></div></div>
+        </section>
+        <section class="panel us057">
+          <div class="detail-main"><div class="card-row"><span class="pill">Blocked</span><span class="id">US-057</span></div><h2 class="detail-title">Dependency Graph View</h2><p class="reason">waiting for US-056</p><div class="fields"><div class="field"><span>Lane</span><strong>normal</strong></div><div class="field"><span>Proof</span><strong>configured</strong></div><div class="field"><span>Run</span><strong>none</strong></div><div class="field"><span>Children</span><strong>none</strong></div></div><div class="actions"><button class="btn primary" type="button" disabled>Start blocked</button><button class="btn" type="button">Open story</button></div></div>
+          <div class="detail-section"><div class="section-head"><h2>Dependencies</h2></div><p class="eyebrow">Blocked by</p><div class="chip-row"><span class="pill">US-056</span></div><p class="eyebrow" style="margin-top: var(--space-4)">Unblocks</p><div class="chip-row"><span class="pill">US-059</span></div></div>
+        </section>
+        <section class="panel us058">
+          <div class="detail-main"><div class="card-row"><span class="pill">Ready</span><span class="id">US-058</span></div><h2 class="detail-title">Work Detail And Live Codex Logs</h2><p class="reason">ready</p><div class="fields"><div class="field"><span>Lane</span><strong>normal</strong></div><div class="field"><span>Proof</span><strong>configured</strong></div><div class="field"><span>Run</span><strong>none</strong></div><div class="field"><span>Children</span><strong>none</strong></div></div><div class="actions"><button class="btn primary" type="button">Start work</button><button class="btn" type="button">Open story</button></div></div>
+          <div class="detail-section"><div class="section-head"><h2>Dependencies</h2></div><p class="empty">No blockers. Starting this task would call POST /api/tasks/US-058/start.</p></div>
+        </section>
+        <section class="panel us059">
+          <div class="detail-main"><div class="card-row"><span class="pill">Blocked</span><span class="id">US-059</span></div><h2 class="detail-title">Review Surface Density Pass</h2><p class="reason">waiting for US-057, US-058</p><div class="fields"><div class="field"><span>Lane</span><strong>normal</strong></div><div class="field"><span>Proof</span><strong>configured</strong></div><div class="field"><span>Run</span><strong>none</strong></div><div class="field"><span>Children</span><strong>none</strong></div></div><div class="actions"><button class="btn primary" type="button" disabled>Start blocked</button><button class="btn" type="button">Open story</button></div></div>
+          <div class="detail-section"><div class="section-head"><h2>Dependencies</h2></div><p class="eyebrow">Blocked by</p><div class="chip-row"><span class="pill">US-057</span><span class="pill">US-058</span></div><p class="eyebrow" style="margin-top: var(--space-4)">Unblocks</p><p class="empty">No downstream work in this slice.</p></div>
+        </section>
+        <section class="panel us060">
+          <div class="detail-main"><div class="card-row"><span class="pill">Review</span><span class="id">US-060</span></div><h2 class="detail-title">Approve Sync From Review</h2><p class="reason">review pull request</p><div class="fields"><div class="field"><span>Lane</span><strong>normal</strong></div><div class="field"><span>Proof</span><strong>configured</strong></div><div class="field"><span>Run</span><strong>run_060</strong></div><div class="field"><span>Outcome</span><strong>completed</strong></div></div><div class="actions"><button class="btn" type="button">Mark PR merged</button><button class="btn primary" type="button" disabled>Approve sync</button></div></div>
+          <div class="detail-section"><div class="section-head"><h2>Review evidence</h2><span class="pill">created</span></div><p class="reason">Mark PR merged after review, then approve sync.</p><ul class="review-list"><li>npm --prefix crates/harness-symphony/web-ui run build</li><li>npm --prefix crates/harness-symphony/web-ui run e2e</li><li>cargo test -p harness-symphony web</li></ul></div>
+        </section>
+        <section class="panel us061">
+          <div class="detail-main"><div class="card-row"><span class="pill">Needs Attention</span><span class="id">US-061</span></div><h2 class="detail-title">Retry Failed App Server Run</h2><p class="reason">Inspect run artifacts and retry when safe.</p><div class="fields"><div class="field"><span>Lane</span><strong>normal</strong></div><div class="field"><span>Proof</span><strong>configured</strong></div><div class="field"><span>Run</span><strong>run_061</strong></div><div class="field"><span>Status</span><strong>failed</strong></div></div><div class="actions"><button class="btn primary" type="button" disabled>Retry after inspection</button><button class="btn" type="button">Open artifacts</button></div></div>
+        </section>
+        <section class="panel us062">
+          <div class="detail-main"><div class="card-row"><span class="pill">Ready</span><span class="id">US-062</span></div><h2 class="detail-title">Local Backend Smoke</h2><p class="reason">ready</p><div class="fields"><div class="field"><span>Lane</span><strong>tiny</strong></div><div class="field"><span>Proof</span><strong>configured</strong></div><div class="field"><span>Run</span><strong>none</strong></div><div class="field"><span>Children</span><strong>none</strong></div></div><div class="actions"><button class="btn primary" type="button">Start work</button><button class="btn" type="button">Open story</button></div></div>
+        </section>
+        <div class="detail-section">
+          <div id="logs" class="section-head"><h2>Codex App Server events</h2><p>APP_SERVER_EVENTS.jsonl</p></div>
+          <div class="log">
+            <div class="event"><time>12:01:08</time><div><strong>thread/started</strong>Codex App Server thread opened for US-056</div></div>
+            <div class="event"><time>12:01:16</time><div><strong>turn/started</strong>Agent began implementation pass</div></div>
+            <div class="event"><time>12:02:41</time><div><strong>item/agentMessage/delta</strong>Reading Symphony board API and work derivation</div></div>
+            <div class="event"><time>12:05:22</time><div><strong>turn/diff/updated</strong>Review changeset preview available</div></div>
+            <div class="event"><time>12:08:10</time><div><strong>turn/completed</strong>Waiting for validation evidence</div></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <p class="source">Source: current Symphony product docs, E08 story matrix, crates/harness-symphony/src/web.rs, crates/harness-symphony/src/work.rs, and the current React UI action wiring. Refresh source can map to local Symphony API responses and run artifacts.</p>
+      </div>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const workspace = document.querySelector("[data-od-id='path-0'] .workspace");
+      const splitter = workspace?.querySelector(".splitter");
+      const closeDetail = document.querySelector("[data-close-detail]");
+      const selectedTasks = Array.from(document.querySelectorAll("input[name='selected-task']"));
+      if (!workspace || !splitter) return;
+
+      const clamp = (value) => {
+        const max = Math.min(880, Math.floor(window.innerWidth * 0.68));
+        return Math.max(280, Math.min(max, value));
+      };
+
+      const setWidth = (value) => {
+        const width = clamp(value);
+        workspace.style.setProperty("--detail-width", `${width}px`);
+        splitter.setAttribute("aria-valuenow", String(width));
+        splitter.setAttribute("aria-valuetext", `Detail panel ${width}px wide`);
+      };
+
+      splitter.setAttribute("aria-valuemin", "280");
+      splitter.setAttribute("aria-valuemax", String(Math.min(880, Math.floor(window.innerWidth * 0.68))));
+
+      splitter.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        splitter.setPointerCapture(event.pointerId);
+        workspace.classList.add("is-resizing");
+
+        const onMove = (moveEvent) => {
+          const rect = workspace.getBoundingClientRect();
+          const nextWidth = rect.right - moveEvent.clientX - 12;
+          setWidth(nextWidth);
+        };
+
+        const onUp = () => {
+          workspace.classList.remove("is-resizing");
+          splitter.removeEventListener("pointermove", onMove);
+          splitter.removeEventListener("pointerup", onUp);
+          splitter.removeEventListener("pointercancel", onUp);
+        };
+
+        splitter.addEventListener("pointermove", onMove);
+        splitter.addEventListener("pointerup", onUp);
+        splitter.addEventListener("pointercancel", onUp);
+      });
+
+      splitter.addEventListener("keydown", (event) => {
+        const current = parseFloat(getComputedStyle(workspace).getPropertyValue("--detail-width")) || 520;
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          setWidth(current + 24);
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          setWidth(current - 24);
+        }
+      });
+
+      splitter.addEventListener("dblclick", () => {
+        workspace.style.removeProperty("--detail-width");
+        splitter.removeAttribute("aria-valuenow");
+        splitter.removeAttribute("aria-valuetext");
+      });
+
+      closeDetail?.addEventListener("click", () => {
+        selectedTasks.forEach((input) => {
+          input.checked = false;
+        });
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && selectedTasks.some((input) => input.checked)) {
+          selectedTasks.forEach((input) => {
+            input.checked = false;
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

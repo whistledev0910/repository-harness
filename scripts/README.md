@@ -20,6 +20,8 @@ scripts/bin/harness-cli trace ...     # Record and auto-score an agent execution
 scripts/bin/harness-cli score-trace   # Score a trace against TRACE_SPEC.md tiers
 scripts/bin/harness-cli query ...     # Query harness data, including backlog --open/--closed
 scripts/bin/harness-cli query matrix --numeric  # Show proof flags as 1/0
+scripts/bin/harness-cli db changeset apply .harness/changesets/run_123.changeset.jsonl
+scripts/bin/harness-cli db rebuild --from .harness/changesets
 scripts/bin/harness-cli migrate       # Apply pending schema migrations
 scripts/bin/harness-cli --version     # Print the installed CLI version
 ```
@@ -40,6 +42,18 @@ human-readable `yes`/`no`; use `query matrix --numeric` when copying values into
 
 The schema lives in `scripts/schema/` and is version-controlled. The database
 file (`harness.db`) is `.gitignore`d.
+
+Set `HARNESS_DB_PATH=/path/to/harness.db` when a workflow needs `harness-cli`
+to operate on an isolated copied database. `HARNESS_DB_PATH` takes precedence
+over the legacy `HARNESS_DB` override; if neither is set, the CLI uses
+`harness.db` in the repository root.
+
+Set `HARNESS_RUN_ID=<run-id>` during an isolated run to append semantic
+operation records to `.harness/changesets/<run-id>.changeset.jsonl` under the
+resolved repository root. The first write records a `changeset.header`; durable
+write commands append operation records such as `story.update`, `trace.add`,
+and `decision.add`. Normal CLI use without `HARNESS_RUN_ID` writes no
+changeset.
 
 Requires: the prebuilt Rust CLI at `scripts/bin/harness-cli` on macOS/Linux or
 `scripts/bin/harness-cli.exe` on Windows.
@@ -73,6 +87,8 @@ scripts/bin/harness-cli query traces
 scripts/bin/harness-cli query friction
 scripts/bin/harness-cli query stats
 scripts/bin/harness-cli query sql ...
+scripts/bin/harness-cli db changeset apply ...
+scripts/bin/harness-cli db rebuild --from ...
 ```
 
 `scripts/bin/harness-cli import brownfield` seeds or refreshes the durable database
@@ -130,6 +146,13 @@ The installer must stay limited to harness files. Do not use it to scaffold
 application source folders, package scripts, CI, tests, platform shells, or fake
 validation commands. The installer script is not part of the installed project
 payload.
+
+The file payload is declared once in `scripts/harness-install-files.txt` and is
+read by both the Bash and PowerShell installers. Add new Harness docs,
+templates, or decisions there instead of duplicating file lists in each
+installer. Schema migrations are different: both installers discover
+`scripts/schema/*.sql` automatically from the source repository, so adding a
+new migration only requires committing the SQL file.
 
 By default the installer also downloads the prebuilt Rust Harness CLI for the
 current platform into `scripts/bin/harness-cli` on macOS/Linux or

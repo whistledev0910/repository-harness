@@ -1,0 +1,219 @@
+{
+  "dashboard": {
+    "generatedAt": "2026-06-26",
+    "sourceLabel": "Current Symphony specs, story matrix, and local API contracts",
+    "summary": {
+      "ready": 2,
+      "blocked": 2,
+      "inProgress": 1,
+      "review": 1,
+      "needsAttention": 1,
+      "done": 4
+    },
+    "apiContracts": [
+      "GET /api/board",
+      "POST /api/tasks/<story-id>/start",
+      "GET /api/runs/<run-id>/events",
+      "GET /api/runs/<run-id>/review",
+      "POST /api/runs/<run-id>/pr-merged",
+      "POST /api/runs/<run-id>/sync"
+    ],
+    "states": [
+      "Ready",
+      "Blocked",
+      "In Progress",
+      "Review",
+      "Needs Attention",
+      "Done"
+    ],
+    "tasks": [
+      {
+        "id": "US-054",
+        "title": "Task Hierarchy Rendering",
+        "state": "Done",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "story implemented",
+        "blockers": [],
+        "unblocks": ["US-056"],
+        "children": [],
+        "runId": "run_054",
+        "activeRun": null
+      },
+      {
+        "id": "US-055",
+        "title": "PR Merged Gate Before Sync",
+        "state": "Done",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "synced locally",
+        "blockers": [],
+        "unblocks": ["US-056"],
+        "children": [],
+        "runId": "run_055",
+        "activeRun": null
+      },
+      {
+        "id": "US-056",
+        "title": "Simplify Kanban-First Controller",
+        "state": "In Progress",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "active run run_056",
+        "blockers": ["US-054", "US-055"],
+        "unblocks": ["US-057", "US-058"],
+        "children": ["US-056A", "US-056B"],
+        "runId": "run_056",
+        "activeRun": "run_056"
+      },
+      {
+        "id": "US-057",
+        "title": "Dependency Graph View",
+        "state": "Blocked",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "waiting for US-056",
+        "blockers": ["US-056"],
+        "unblocks": ["US-059"],
+        "children": [],
+        "runId": null,
+        "activeRun": null
+      },
+      {
+        "id": "US-058",
+        "title": "Work Detail And Live Codex Logs",
+        "state": "Ready",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "ready",
+        "blockers": [],
+        "unblocks": ["US-059"],
+        "children": [],
+        "runId": null,
+        "activeRun": null
+      },
+      {
+        "id": "US-059",
+        "title": "Review Surface Density Pass",
+        "state": "Blocked",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "waiting for US-057, US-058",
+        "blockers": ["US-057", "US-058"],
+        "unblocks": [],
+        "children": [],
+        "runId": null,
+        "activeRun": null
+      },
+      {
+        "id": "US-060",
+        "title": "Approve Sync From Review",
+        "state": "Review",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "review pull request",
+        "blockers": [],
+        "unblocks": [],
+        "children": [],
+        "runId": "run_060",
+        "activeRun": null
+      },
+      {
+        "id": "US-061",
+        "title": "Retry Failed App Server Run",
+        "state": "Needs Attention",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "Inspect run artifacts and retry when safe.",
+        "blockers": [],
+        "unblocks": [],
+        "children": [],
+        "runId": "run_061",
+        "activeRun": null
+      },
+      {
+        "id": "US-062",
+        "title": "Local Backend Smoke",
+        "state": "Ready",
+        "lane": "tiny",
+        "verify": "configured",
+        "reason": "ready",
+        "blockers": [],
+        "unblocks": [],
+        "children": [],
+        "runId": null,
+        "activeRun": null
+      },
+      {
+        "id": "US-050",
+        "title": "Run Start And Codex Event API",
+        "state": "Done",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "story implemented",
+        "blockers": [],
+        "unblocks": ["US-056"],
+        "children": [],
+        "runId": "run_050",
+        "activeRun": null
+      },
+      {
+        "id": "US-051",
+        "title": "Review Surface For Run Artifacts",
+        "state": "Done",
+        "lane": "normal",
+        "verify": "configured",
+        "reason": "story implemented",
+        "blockers": [],
+        "unblocks": ["US-060"],
+        "children": [],
+        "runId": "run_051",
+        "activeRun": null
+      }
+    ],
+    "events": [
+      {
+        "method": "thread/started",
+        "detail": "Codex App Server thread opened for US-056",
+        "time": "12:01:08"
+      },
+      {
+        "method": "turn/started",
+        "detail": "Agent began implementation pass",
+        "time": "12:01:16"
+      },
+      {
+        "method": "item/agentMessage/delta",
+        "detail": "Reading Symphony board API and work derivation",
+        "time": "12:02:41"
+      },
+      {
+        "method": "turn/diff/updated",
+        "detail": "Review changeset preview available",
+        "time": "12:05:22"
+      },
+      {
+        "method": "turn/completed",
+        "detail": "Waiting for validation evidence",
+        "time": "12:08:10"
+      }
+    ],
+    "review": {
+      "runId": "run_060",
+      "status": "completed",
+      "outcome": "completed",
+      "prStatus": "created",
+      "nextAction": "Mark PR merged after review, then approve sync.",
+      "changedFiles": [
+        "crates/harness-symphony/web-ui/src/main.tsx",
+        "crates/harness-symphony/web-ui/src/styles.css",
+        "docs/product/symphony-web-ui-controller.md"
+      ],
+      "validation": [
+        "npm --prefix crates/harness-symphony/web-ui run build",
+        "npm --prefix crates/harness-symphony/web-ui run e2e",
+        "cargo test -p harness-symphony web"
+      ]
+    }
+  }
+}

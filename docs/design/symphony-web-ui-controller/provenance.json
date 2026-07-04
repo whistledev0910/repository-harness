@@ -1,0 +1,42 @@
+{
+  "artifact": "symphony-controller-live-dashboard",
+  "createdAt": "2026-06-26",
+  "sourceNotes": [
+    "Used docs/product/symphony-web-ui-controller.md for board states, dependency semantics, workflow, and non-goals.",
+    "Used docs/stories/epics/E08-symphony-web-ui-controller/README.md and Harness matrix rows US-047 through US-055 for implemented behavior.",
+    "Used crates/harness-symphony/src/web.rs for local API paths and review/event DTO fields.",
+    "Used crates/harness-symphony/src/work.rs for board derivation, blocked reasons, cycle behavior, and run status mapping.",
+    "Used crates/harness-symphony/web-ui/src/main.tsx for current action wiring and detail-panel behavior."
+  ],
+  "refreshPlan": {
+    "mode": "local_project_data",
+    "primarySources": [
+      "harness.db story rows",
+      ".symphony/state.db run_state rows",
+      ".harness/runs/<run_id>/APP_SERVER_EVENTS.jsonl",
+      ".harness/runs/<run_id>/RESULT.json",
+      ".harness/changesets/<run_id>.changeset.jsonl"
+    ],
+    "readOnlyApis": [
+      "GET /api/board",
+      "GET /api/runs/<run-id>/events",
+      "GET /api/runs/<run-id>/review"
+    ],
+    "writeActionsShown": [
+      "POST /api/tasks/<story-id>/start",
+      "POST /api/runs/<run-id>/pr-merged",
+      "POST /api/runs/<run-id>/sync"
+    ]
+  },
+  "transformations": [
+    "Normalized story/run fields to the compact preview task shape.",
+    "Grouped tasks by current Symphony board states.",
+    "Reduced event log entries to method, detail, and display time.",
+    "Retained only display-safe summaries from provider-facing event material."
+  ],
+  "safety": {
+    "sensitiveAuthStored": false,
+    "connectorPrivateMaterialStored": false,
+    "providerResponsesStored": false
+  }
+}
