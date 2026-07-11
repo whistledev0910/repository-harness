@@ -631,8 +631,8 @@ pub fn run(cli: Cli) -> Result<(), InterfaceError> {
                 input_type: InputType::from_str(&args.input_type)?,
                 summary: args.summary,
                 risk_lane: RiskLane::from_str(&args.lane)?,
-                risk_flags: CsvList::from_optional(args.flags),
-                affected_docs: CsvList::from_optional(args.docs),
+                risk_flags: CsvList::try_from_optional(args.flags)?,
+                affected_docs: CsvList::try_from_optional(args.docs)?,
                 story_id: args.story,
                 notes: args.notes,
             })?;
@@ -926,11 +926,11 @@ pub fn run(cli: Cli) -> Result<(), InterfaceError> {
                 token_estimate: parse_optional_integer("trace: --tokens", args.tokens)?,
                 friction: args.friction,
                 notes: args.notes,
-                actions: CsvList::from_optional(args.actions),
-                files_read: CsvList::from_optional(args.files_read),
-                files_changed: CsvList::from_optional(args.files_changed),
-                decisions: CsvList::from_optional(args.decisions),
-                errors: CsvList::from_optional(args.errors),
+                actions: CsvList::try_from_optional(args.actions)?,
+                files_read: CsvList::try_from_optional(args.files_read)?,
+                files_changed: CsvList::try_from_optional(args.files_changed)?,
+                decisions: CsvList::try_from_optional(args.decisions)?,
+                errors: CsvList::try_from_optional(args.errors)?,
             })?;
             println!("Trace #{id} recorded.");
             let result = service.score_trace(Some(id))?;

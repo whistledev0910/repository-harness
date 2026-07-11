@@ -16,6 +16,8 @@ pub enum ParseHarnessValueError {
     Integer(String),
     #[error("{0} must be 0 or 1. Example: --unit 1 --integration 1 --e2e 0 --platform 0")]
     BoolFlag(String),
+    #[error("{0}")]
+    CsvList(String),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1204,12 +1206,48 @@ pub struct HarnessStats {
 pub struct CsvList(pub Option<String>);
 
 impl CsvList {
+    #[cfg(test)]
     pub fn from_optional(value: Option<String>) -> Self {
         Self(value.filter(|item| !item.is_empty()))
     }
 
+    pub fn try_from_optional(value: Option<String>) -> Result<Self, ParseHarnessValueError> {
+        let Some(value) = value else {
+            return Ok(Self(None));
+        };
+        let trimmed = value.trim();
+        if trimmed.is_empty() {
+            return Ok(Self(None));
+        }
+        if trimmed.starts_with('[') || trimmed.starts_with('{') {
+            let parsed: serde_json::Value = serde_json::from_str(trimmed).map_err(|error| {
+                ParseHarnessValueError::CsvList(format!(
+                    "JSON-like list input must be a JSON array of strings: {error}"
+                ))
+            })?;
+            let items = parsed.as_array().ok_or_else(|| {
+                ParseHarnessValueError::CsvList(
+                    "JSON-like list input must be an array, not an object".to_owned(),
+                )
+            })?;
+            if !items.iter().all(serde_json::Value::is_string) {
+                return Err(ParseHarnessValueError::CsvList(
+                    "JSON-like list input must contain only strings".to_owned(),
+                ));
+            }
+            return Ok(Self(Some(
+                serde_json::to_string(items).expect("serializing a JSON array cannot fail"),
+            )));
+        }
+        Ok(Self(Some(value)))
+    }
+
     pub fn as_json_text(&self) -> Option<String> {
         self.0.as_ref().map(|value| {
+            if let Ok(items) = serde_json::from_str::<Vec<String>>(value) {
+                return serde_json::to_string(&items)
+                    .expect("serializing a string list cannot fail");
+            }
             let escaped_items = value
                 .split(',')
                 .map(|item| format!("\"{}\"", escape_json_string(item.trim())))
@@ -1270,7 +1308,7 @@ pub fn normalize_token(value: &str) -> String {
     let mut last_was_separator = false;
 
     for character in value.trim().chars().flat_map(char::to_lowercase) {
-        if character.is_ascii_alphanumeric() {
+        if character.is_alphanumeric() {
             normalized.push(character);
             last_was_separator = false;
         } else if !last_was_separator && !normalized.is_empty() {
@@ -1335,6 +1373,45 @@ mod tests {
             CsvList::from_optional(None).as_json_text_or_null_literal(),
             "null"
         );
+    }
+
+    #[test]
+    fn proof_audit_json_list_input_is_normalized_instead_of_split_into_fragments() {
+        let list = CsvList::from_optional(Some(r#"["ran tests","checked replay"]"#.to_owned()));
+        assert_eq!(
+            list.as_json_text().as_deref(),
+            Some(r#"["ran tests","checked replay"]"#)
+        );
+        let empty = CsvList::from_optional(Some("[]".to_owned()));
+        assert_eq!(empty.as_json_text().as_deref(), Some("[]"));
+    }
+
+    #[test]
+    fn semantic_integrity_json_like_lists_are_typed_and_csv_remains_supported() {
+        assert_eq!(
+            CsvList::try_from_optional(Some("one, two".to_owned()))
+                .unwrap()
+                .as_json_text()
+                .as_deref(),
+            Some(r#"["one","two"]"#)
+        );
+        assert_eq!(
+            CsvList::try_from_optional(Some(r#"["one","two"]"#.to_owned()))
+                .unwrap()
+                .as_json_text()
+                .as_deref(),
+            Some(r#"["one","two"]"#)
+        );
+        assert_eq!(
+            CsvList::try_from_optional(Some("[]".to_owned()))
+                .unwrap()
+                .as_json_text()
+                .as_deref(),
+            Some("[]")
+        );
+        for invalid in [r#"["one",1]"#, r#"{"one":1}"#, r#"["one""#] {
+            assert!(CsvList::try_from_optional(Some(invalid.to_owned())).is_err());
+        }
     }
 
     #[test]

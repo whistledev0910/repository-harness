@@ -93,6 +93,13 @@ and covered evidence without creating an intake, story, or Symphony run.
 `propose --commit` is intentionally rejected; Harness never bulk-writes every
 currently displayed suggestion.
 
+Audit-backed proposals require stable audit episodes before either decision.
+If preview reports unrecorded audit evidence, run
+`scripts/bin/harness-cli audit --record-evidence` and decide the newly displayed
+stable key; proposal decisions never create audit evidence as a side effect.
+Rejection reasons are stored and compared as exact values, so a prefix or
+superset is not treated as an idempotent retry.
+
 Accepting or rejecting a `regression` or `reconsideration` candidate appends a
 new occurrence with a new uid, the same proposal key, the immediately prior
 terminal occurrence as `predecessor_uid`, and only the uncovered stable evidence.
@@ -147,6 +154,12 @@ Failure leaves the story completion-eligible and closes nothing. Repeated or
 concurrent completion is idempotent. Resolution evidence records the story,
 proof command, completion identity, and completion time; it does not claim the
 later measured outcome.
+
+Resolver links and new traces carry replayed nanosecond ordering metadata.
+Completion accepts only a qualifying trace recorded strictly after the newest
+resolver link. Legacy links without ordering metadata use a conservative strict
+timestamp comparison. Semantic replay preserves link, verification, completion,
+and closure timestamps exactly rather than substituting rebuild time.
 
 ## Record Measured Outcomes
 

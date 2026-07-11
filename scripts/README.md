@@ -195,6 +195,19 @@ test:release
   full suite, log checks, and performance smoke
 ```
 
+## Changeset Rebuild Validation
+
+Run the durable repository rebuild and its validator contract regressions:
+
+```bash
+scripts/validate-changeset-rebuild.sh
+scripts/test-validate-changeset-rebuild.sh
+```
+
+The validator builds the current workspace CLI unless `HARNESS_CLI` is set
+explicitly. `HARNESS_CHANGESET_DIR` can point validation at a copied fixture
+history without changing the repository changesets.
+
 ## Release Packaging
 
 Build the current-platform Rust CLI release artifact from the source repo:

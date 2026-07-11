@@ -1,0 +1,10 @@
+{"base_schema_version":12,"op":"changeset.header","run_id":"run_1783741400_e09_proof_parity","version":1}
+{"id":"US-073","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 10:24:28"},"version":2}
+{"id":"US-074","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 11:03:17"},"version":2}
+{"id":"US-075","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 11:21:20"},"version":2}
+{"id":"US-076","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 14:56:34"},"version":2}
+{"id":"US-077","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 15:32:00"},"version":2}
+{"id":"US-078","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 16:40:24"},"version":2}
+{"id":"US-079","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 16:40:26"},"version":2}
+{"id":"US-080","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 16:40:28"},"version":2}
+{"id":"US-081","op":"story.verify","payload":{"result":"pass","verified_at":"2026-07-10 14:56:34"},"version":2}
