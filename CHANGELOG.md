@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-07-12 - PR #44
+
+- refactor(e11): complete Symphony repository separation (@hoangnb24)
+- Merge commit: `22a6a06ad1cd89026b983108dc5ecae51ee7a655`
+- Harness CLI release: `harness-cli-v0.1.15`
+- Changed files: 465 total (first 20 shown)
+  - `.agents/skills/impeccable/SKILL.md`
+  - `.agents/skills/impeccable/agents/impeccable_asset_producer.toml`
+  - `.agents/skills/impeccable/agents/impeccable_manual_edit_applier.toml`
+  - `.agents/skills/impeccable/agents/openai.yaml`
+  - `.agents/skills/impeccable/reference/adapt.md`
+  - `.agents/skills/impeccable/reference/animate.md`
+  - `.agents/skills/impeccable/reference/audit.md`
+  - `.agents/skills/impeccable/reference/bolder.md`
+  - `.agents/skills/impeccable/reference/brand.md`
+  - `.agents/skills/impeccable/reference/clarify.md`
+  - `.agents/skills/impeccable/reference/codex.md`
+  - `.agents/skills/impeccable/reference/colorize.md`
+  - `.agents/skills/impeccable/reference/craft.md`
+  - `.agents/skills/impeccable/reference/critique.md`
+  - `.agents/skills/impeccable/reference/delight.md`
+  - `.agents/skills/impeccable/reference/distill.md`
+  - `.agents/skills/impeccable/reference/document.md`
+  - `.agents/skills/impeccable/reference/extract.md`
+  - `.agents/skills/impeccable/reference/harden.md`
+  - `.agents/skills/impeccable/reference/hooks.md`
+  - _… 445 additional file(s) omitted from this entry._
+
 ## 2026-07-12 - PR #43
 
 - Publish Harness orchestration protocol v1 and E11 separation foundations
