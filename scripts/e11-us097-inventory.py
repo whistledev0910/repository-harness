@@ -78,7 +78,11 @@ def json_value(value: Any) -> Any:
 def row_identity(table: str, row: sqlite3.Row, columns: list[sqlite3.Row]) -> str:
     names = [column[1] for column in columns]
     primary = [column[1] for column in sorted(columns, key=lambda item: item[5]) if column[5]]
-    selected = primary or [name for name in IDENTITY_COLUMNS if name in names]
+    stable = [
+        name for name in ("uid", "stable_uid")
+        if name in names and row[name] is not None and str(row[name]) != ""
+    ]
+    selected = stable or primary or [name for name in IDENTITY_COLUMNS if name in names]
     if not selected:
         # A table without a declared/stable key is still inventoried exactly.
         # Its canonical full-row digest is the only non-lossy identity available.
@@ -208,11 +212,19 @@ def compare(
     disposition_keys = set(dispositions)
     unknown = sorted(source_keys - disposition_keys)
     orphan = sorted(disposition_keys - source_keys)
-    expected_target = {
-        key for key, value in dispositions.items() if value["action"] == "move-target"
+    target_expectations = {
+        key: (key[0], value.get("target_identity", key[1]))
+        for key, value in dispositions.items() if value["action"] == "move-target"
     }
+    expected_target = set(target_expectations.values())
     expected_core = {
         key for key, value in dispositions.items() if value["action"] == "retain-core"
+    }
+    derived = {
+        key for key, value in dispositions.items() if value["action"] == "derive"
+    }
+    allowed_target_overlap = derived | {
+        key for key, value in dispositions.items() if value.get("allow_target_overlap") is True
     }
     actual_core = set()
     if core:
@@ -231,11 +243,13 @@ def compare(
     # Only moved identities are compared. Target-native rows are deliberately
     # permitted and reported separately; they do not originate in source.
     missing_target = sorted(expected_target - actual_target)
-    target_native = sorted(actual_target - source_keys)
-    unexpected_source_overlap = sorted((actual_target & source_keys) - expected_target)
+    target_native = sorted(actual_target - source_keys - expected_target)
+    unexpected_source_overlap = sorted(
+        (actual_target & source_keys) - expected_target - allowed_target_overlap
+    )
     missing_core = sorted(expected_core - actual_core)
     core_native = sorted(actual_core - source_keys)
-    unexpected_core_overlap = sorted((actual_core & source_keys) - expected_core)
+    unexpected_core_overlap = sorted((actual_core & source_keys) - expected_core - derived)
 
     # Verify that retained/moved rows do not point across a discarded or other-
     # repository disposition. Composite FKs are grouped by SQLite FK id.
@@ -284,6 +298,13 @@ def compare(
         "unknown_source_rows": [{"table": t, "identity": i} for t, i in unknown],
         "orphan_dispositions": [{"table": t, "identity": i} for t, i in orphan],
         "expected_target_rows": len(expected_target),
+        "target_identity_mappings": [
+            {
+                "source_table": source[0], "source_identity": source[1],
+                "target_table": target[0], "target_identity": target[1],
+            }
+            for source, target in sorted(target_expectations.items())
+        ],
         "missing_target_rows": [{"table": t, "identity": i} for t, i in missing_target],
         "unexpected_source_target_overlap": [
             {"table": t, "identity": i} for t, i in unexpected_source_overlap

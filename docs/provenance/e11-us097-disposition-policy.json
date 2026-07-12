@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "baseline_ownership_map": "docs/stories/epics/E11-symphony-repository-separation/US-089-separation-boundary-and-frozen-baselines/evidence/durable-ownership-map.json",
+  "post_baseline_core": [
+    ["intake", "ink_2b667f32383c553aa0644bf87cabec94"],
+    ["intake", "ink_01bd6192a4988c8a0f2429a663d06f4e"],
+    ["intake", "ink_cca6b0b8db005bf4914c6374cf31f95b"],
+    ["intake", "ink_d6457a5a53ab33683ce585dfc080e64c"],
+    ["intake", "ink_ab45478f57efa90b8b6e7951165e01d0"],
+    ["intake", "ink_89369011d3c02d5b4922fe7b00faca10"],
+    ["intake", "ink_68473b976dee8ac5c2d7fdc940763afa"],
+    ["intake", "ink_8a0990444376d2495ce688d6198623df"],
+    ["trace", "trc_4d46e0f6bd6cfb875a02923a773b9456"],
+    ["trace", "trc_105a197808a933c83f6c9a8474dc16f4"],
+    ["trace", "trc_8946e5c7f4ff038d0c6eb3a94cb03b17"],
+    ["trace", "trc_3511333c273075b59d9e62780e9ad24a"],
+    ["trace", "trc_4f13b0134ab2601a2903e2a58cc892e1"],
+    ["trace", "trc_eb56c9755398563dc41ad8f09e703ef8"],
+    ["trace", "trc_437fbce2c613e8d854700e96849cd594"],
+    ["trace", "trc_4ef8ee9e84a764713d58b80691edc579"],
+    ["trace", "trc_760e9516a0eedda721e7a7d56c4f168f"],
+    ["trace", "trc_4a5524ca3c1b06101b79495cff9e44d2"]
+  ],
+  "allowed_target_overlap": [
+    ["story", "US-093"],
+    ["story", "US-094"],
+    ["story", "US-095"],
+    ["story", "US-096"],
+    ["story_dependency", "US-093|US-094"],
+    ["story_dependency", "US-094|US-095"],
+    ["story_dependency", "US-095|US-096"]
+  ],
+  "overrides": [
+    {
+      "table": "backlog",
+      "legacy_identity": "10",
+      "action": "move-target",
+      "owner": "symphony",
+      "target_identity": "backlog:uid=\"blg_a7117d660af99f206c4662bdb3d2fbaf\"",
+      "reason": "US-094 reviewed this unresolved terminal-event investigation for one target-local carry-forward"
+    },
+    {
+      "table": "backlog",
+      "legacy_identity": "11",
+      "action": "archive-only",
+      "owner": "symphony",
+      "reason": "US-095 clean-fixture parity and the US-097 generic replay suite supersede the monorepo replay proposal"
+    },
+    {
+      "table": "backlog",
+      "legacy_identity": "12",
+      "action": "archive-only",
+      "owner": "symphony",
+      "reason": "US-094 explicitly rejected importing the hidden intake skill as a runtime prerequisite"
+    },
+    {
+      "table": "backlog",
+      "legacy_identity": "14",
+      "action": "archive-only",
+      "owner": "symphony",
+      "reason": "US-093 fail-closed protocol discovery supersedes the stale-CLI preflight proposal"
+    }
+  ]
+}
