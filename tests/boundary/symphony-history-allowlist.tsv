@@ -37,4 +37,9 @@ exact	tests/boundary/assert-target-symphony-coverage.sh	migration_plan	target ow
 exact	tests/boundary/symphony-history-allowlist.tsv	migration_plan	product-name reference policy
 exact	tests/boundary/test-e11-historical-receipts.sh	historical_allowed	immutable receipt verifier test
 exact	tests/maintenance/test-harness-cli-release-classification.sh	migration_plan	negative wrong-product release fixture
+exact	tests/core/assert-durable-state-boundary.sh	migration_plan	US-099 negative durable-state boundary
+exact	tests/core/assert-schema-replay-command-contract.sh	migration_plan	US-099 product-neutral replay assertion
+exact	tests/core/harness-command-contract.txt	migration_plan	before-cleanup command manifest fixture
+exact	tests/core/test-core-boundary-contract.sh	migration_plan	US-099 negative product-state fixtures
+exact	tests/release/test-release-workflow-contract.sh	migration_plan	US-099 wrong-product release negative fixture
 exact	tests/history/test-e11-us097-inventory.sh	historical_allowed	partition evidence test

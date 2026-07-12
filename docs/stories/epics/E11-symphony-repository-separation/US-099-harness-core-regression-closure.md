@@ -83,6 +83,7 @@ cargo clippy -p harness-cli --all-targets -- -D warnings
 cargo test -p harness-cli --locked
 scripts/validate-changeset-rebuild.sh
 scripts/test-validate-changeset-rebuild.sh
+tests/core/assert-schema-replay-command-contract.sh
 bash -n scripts/install-harness.sh
 bash -n scripts/build-harness-cli-release.sh
 scripts/build-harness-cli-release.sh
@@ -90,11 +91,11 @@ scripts/bin/harness-cli audit
 scripts/bin/harness-cli query matrix
 scripts/bin/harness-cli query backlog --open
 scripts/bin/harness-cli query tools --summary
-<bash-installer-smoke>
-<powershell-installer-smoke-on-windows>
-<checksum-verified-upgrade-from-initial-protocol-tag>
-<symphony-compatibility-against-initial-protocol-tag>
-<symphony-compatibility-against-this-candidate>
+tests/installer/test-install-harness-modes.sh
+# PowerShell installer modes run in the Windows CI job.
+scripts/test-install-harness-cli-upgrade.sh
+# Cross-repository candidate compatibility is recorded by the coordinated
+# cutover workflow rather than executed from this core-only checkout.
 git diff --check
 ```
 
@@ -105,5 +106,10 @@ reintroduce Symphony source to satisfy a test.
 
 ## Evidence
 
-Pending implementation. This story's evidence is the final source-cleanup merge
-gate, not the remote cutover authorization.
+The core schema/command/replay gate migrates fresh databases and every prior
+schema version from `001` through `012` to current `013`, checks integrity and
+foreign-key closure, exercises the required public command manifest, validates
+the protocol capability tuple, and runs product-neutral replay fixtures. The
+remaining installer, packaging, platform, and cross-repository results are
+attached by the complete story wrapper and coordinated cutover evidence; this
+story remains a merge gate rather than remote cutover authorization.
