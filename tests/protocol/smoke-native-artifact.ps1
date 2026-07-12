@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$PSNativeCommandUseErrorActionPreference = $false
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 $Artifact = (Resolve-Path $Artifact).Path
 $Temp = Join-Path ([System.IO.Path]::GetTempPath()) ("harness-protocol-" + [guid]::NewGuid())
@@ -19,7 +20,8 @@ function Invoke-HarnessJson {
     $exit = $LASTEXITCODE
     if ($exit -ne $ExpectedExit) {
         $detail = if (Test-Path $stderr) { Get-Content -Raw $stderr } else { "" }
-        throw "Harness exit $exit, expected $ExpectedExit. $detail"
+        $text = $lines -join "`n"
+        throw "Harness '$($Arguments -join ' ')' exited $exit, expected $ExpectedExit. stdout=$text stderr=$detail"
     }
     $text = $lines -join "`n"
     try { return $text | ConvertFrom-Json -Depth 100 }

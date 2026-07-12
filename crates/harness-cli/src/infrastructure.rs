@@ -3659,11 +3659,21 @@ impl HarnessRepository for SqliteHarnessRepository {
                 ));
             }
             drop(snapshot);
-            let mut file = fs::File::open(&temporary)?;
+            // `sync_all` requires a writable handle on Windows even though the
+            // snapshot bytes are only read here for hashing.
+            let mut file = fs::OpenOptions::new()
+                .read(true)
+                .write(true)
+                .open(&temporary)?;
             let mut bytes = Vec::new();
             file.read_to_end(&mut bytes)?;
             let snapshot_file_sha256 = sha256_bytes(&bytes);
             file.sync_all()?;
+            // Windows does not permit renaming an open file without delete
+            // sharing. Close the verified temporary snapshot before the
+            // atomic move; Unix permits this but Windows release artifacts
+            // exercise the stricter behavior.
+            drop(file);
             fs::rename(&temporary, output)?;
             if let Ok(directory) = fs::File::open(parent) {
                 let _ = directory.sync_all();
