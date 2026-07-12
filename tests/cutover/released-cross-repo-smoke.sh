@@ -65,8 +65,13 @@ tar -xzf "$symphony_archive" -C "$bundle"
 binary=$(find "$bundle" -type f \( -name harness-symphony -o -name harness-symphony.exe \) -print -quit)
 [[ -n "$binary" && -x "$binary" ]] || { echo "released Symphony binary not found" >&2; exit 1; }
 
-version_json=$($binary version --json)
-jq -e '.harness_protocol_version == 1 and .symphony_version == "0.1.0" and (.supported_harness_cli_versions | index("0.1.14") != null)' <<<"$version_json" >/dev/null
+symphony_contract=$($binary version --json)
+actual_harness_version=${harness_label#harness-cli-v}
+jq -e --arg harness_version "$actual_harness_version" '
+  .harness_protocol_version == 1 and
+  (.symphony_version | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) and
+  (.supported_harness_cli_versions | index($harness_version) != null)
+' <<<"$symphony_contract" >/dev/null
 
 make_fixture() {
   local fixture=$1 story=$2 cli_name=harness-cli
@@ -128,14 +133,17 @@ assert_contract() {
     .result.database_schema_version == 13 and .result.database_state == "current" and
     (["stories.read.v1","stories.write.v1","work-graph.read.v1","story-dependencies.read-write.v1","story-hierarchy.read-write.v1","changesets.apply.v1","changesets.status-sha.v1","isolated-db.v1","isolated-db-snapshot.v1","semantic-operation-log.v1"] - .result.capabilities | length == 0)
   ' <<<"$contract" >/dev/null
+  printf '%s\n' "$contract"
 }
 
 prepare_fixture=$work/prepare-fixture
 run_fixture=$work/run-fixture
 make_fixture "$prepare_fixture" US-RELEASE-PREPARE
 make_fixture "$run_fixture" US-RELEASE-RUN
-assert_contract "$prepare_fixture"
-assert_contract "$run_fixture"
+prepare_contract=$(assert_contract "$prepare_fixture")
+run_contract=$(assert_contract "$run_fixture")
+[[ "$(jq -S '{protocol_version,operation,result}' <<<"$prepare_contract")" == \
+   "$(jq -S '{protocol_version,operation,result}' <<<"$run_contract")" ]]
 
 third=$work/operator
 mkdir "$third"
@@ -207,4 +215,5 @@ jq -n \
   --arg harness_label "$harness_label" --arg harness_sha256 "$harness_sha" \
   --arg symphony_sha256 "$symphony_sha" --arg run_id "$run_id" \
   --arg logical_before "$before" --arg logical_after "$after" \
-  '{result:"pass",harness:{label:$harness_label,sha256:$harness_sha256},symphony:{sha256:$symphony_sha256},run_id:$run_id,logical_before:$logical_before,logical_after:$logical_after,prepare_only:true,doctor:true,work_list:true,web:true,sync_applied_operations:3,sync_noop_operations:0}' | tee "$work/result.json"
+  --argjson harness_contract "$run_contract" --argjson symphony_contract "$symphony_contract" \
+  '{result:"pass",harness:{label:$harness_label,sha256:$harness_sha256,contract:$harness_contract},symphony:{sha256:$symphony_sha256,contract:$symphony_contract},run_id:$run_id,logical_before:$logical_before,logical_after:$logical_after,prepare_only:true,doctor:true,work_list:true,web:true,sync_applied_operations:3,sync_noop_operations:0}' | tee "$work/result.json"

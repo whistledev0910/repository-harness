@@ -17,6 +17,26 @@ smokes, rollback evidence, and source ownership boundary. It deliberately does
 not claim that the cleaned Harness release, runtime disposition, or observation
 window exists. Those remain mandatory in `--readiness` and `--final`.
 
+Canonical target ownership is checked from a fresh clone at the exact
+published `main` commit, never from the long-lived local feature checkout:
+
+```bash
+fresh_target="$(mktemp -d)/symphony"
+git clone git@github.com:hoangnb24/symphony.git "$fresh_target"
+tests/cutover/assert-canonical-symphony-ownership.sh "$fresh_target" --json
+```
+
+The assertion requires `main`, tag `symphony-v0.1.0`, and commit
+`2357bc4f333a12794f975a46dbc0df96599fe4c0` to agree. It also rejects a dirty
+clone, forbidden hidden tool/runtime paths, tracked live changesets, and an
+activated Harness database. This is safe pre-merge proof; final runtime-state
+disposition remains a separate readiness requirement.
+
+The successful fresh-clone result is recorded in
+`canonical-target-ownership.json` with a checksum sidecar. Reproduce the JSON
+from a new clone with the command above rather than treating a long-lived
+local checkout as evidence.
+
 `scripts/verify-e11-us100.sh --final` repeats every readiness check and also
 requires `observation-window.json`. That record must prove all of the following:
 

@@ -27,13 +27,27 @@ wrong-owner active context in both repositories.
 ## Commands
 
 ```bash
-shasum -a 256 -c <symphony-checksums>
-shasum -a 256 -c <harness-checksums>
-<install-clean-harness-fixture>
-<unpack-released-symphony>
-tests/compatibility/released-cross-repo-smoke.sh --harness-tag "$HARNESS_PROTOCOL_V1_TAG"
-tests/compatibility/upgrade-harness-fixture.sh --from "$HARNESS_PROTOCOL_V1_TAG" --to "$HARNESS_CLEAN_CORE_TAG" --verify-checksum
-tests/compatibility/released-cross-repo-smoke.sh --harness-tag "$HARNESS_CLEAN_CORE_TAG"
+# Set these to downloaded native archives/binaries and the values from their
+# published .sha256 sidecars. Run once per host-native tuple.
+tests/cutover/released-cross-repo-smoke.sh \
+  --symphony-archive "$SYMPHONY_ARCHIVE" \
+  --symphony-sha256 "$SYMPHONY_SHA256" \
+  --harness-cli "$HARNESS_PROTOCOL_V1_CLI" \
+  --harness-cli-sha256 "$HARNESS_PROTOCOL_V1_SHA256" \
+  --harness-label harness-cli-v0.1.14
+
+tests/cutover/released-cross-repo-smoke.sh \
+  --symphony-archive "$SYMPHONY_ARCHIVE" \
+  --symphony-sha256 "$SYMPHONY_SHA256" \
+  --harness-cli "$HARNESS_CLEAN_CORE_CLI" \
+  --harness-cli-sha256 "$HARNESS_CLEAN_CORE_SHA256" \
+  --harness-label "$HARNESS_CLEAN_CORE_TAG"
+
+# Separately exercise the checksum-verified installer upgrade using the two
+# native Harness binaries and the clean-core asset name/tag.
+tests/installer/test-cli-upgrade-candidate.sh \
+  "$HARNESS_PROTOCOL_V1_CLI" "$HARNESS_CLEAN_CORE_CLI" \
+  "$HARNESS_CLEAN_CORE_ASSET_NAME" "$HARNESS_CLEAN_CORE_TAG"
 scripts/bin/harness-cli audit
 scripts/bin/harness-cli query matrix
 scripts/bin/harness-cli query backlog --open
@@ -47,10 +61,16 @@ git diff --check
 
 ## Acceptance Evidence
 
-Pending implementation. The final report must name the Symphony release and
-both Harness release SHAs/tags, artifact checksums, discovered protocol tuples,
-both smoke outputs, active-state audit, rollback artifacts, and
-observation-window end condition.
+Develop-candidate evidence is implemented: the published Symphony release and
+checksums, initial-protocol and cleaned-develop artifact smokes, source durable
+boundary, canonical target ownership assertion, and rollback rehearsal are
+available under `evidence/` and `tests/cutover/`.
+
+Cutover acceptance remains pending. The final report must additionally name
+the cleaned Harness release SHA/tag and checksums, both released protocol
+tuples and smoke outputs, completed runtime disposition, active-state audit,
+and eligible observation-window end condition. Develop-candidate proof must
+not be presented as evidence that those post-merge requirements have passed.
 
 ## Executable Story Gate
 

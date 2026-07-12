@@ -1,0 +1,14 @@
+{
+  "schema": "e11-us100-canonical-target-ownership-v1",
+  "recorded_at": "2026-07-12T14:20:28Z",
+  "method": "fresh-clone-exact-main-and-release-tag",
+  "repository": "hoangnb24/symphony",
+  "commit": "2357bc4f333a12794f975a46dbc0df96599fe4c0",
+  "branch": "main",
+  "tag": "symphony-v0.1.0",
+  "clean": true,
+  "forbidden_tracked_paths": 0,
+  "forbidden_hidden_directories": 0,
+  "active_durable_databases": 0,
+  "verifier": "tests/cutover/assert-canonical-symphony-ownership.sh"
+}

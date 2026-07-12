@@ -2,7 +2,11 @@
 
 ## Status
 
-planned — strategy and work packets only; no product source has moved.
+in progress — `US-089` through `US-099` are implemented, Symphony is
+published from its canonical `main` commit as `symphony-v0.1.0`, and `US-100`
+is preparing the Harness `develop` candidate for owner testing. The Harness
+cleanup has not been promoted to `main`; runtime disposition and the mandatory
+post-release observation window remain open.
 
 ## Intake And Decision
 

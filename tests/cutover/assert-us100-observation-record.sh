@@ -7,13 +7,16 @@ test -n "$RECORD" && test -f "$RECORD" || {
   exit 2
 }
 
-jq -e '
+jq -e --argjson now "$(date -u +%s)" '
   .schema == "e11-us100-observation-window-v1" and
   .owner == "hoangnb24" and .required_calendar_days == 7 and
   (.started_at | fromdateiso8601) > 0 and
-  (.eligible_end_at | fromdateiso8601) >= ((.started_at | fromdateiso8601) + 604800) and
+  (.started_at | fromdateiso8601) <= $now and
+  (.eligible_end_at | fromdateiso8601) == ((.started_at | fromdateiso8601) + 604800) and
   (.closed_at | fromdateiso8601) >= (.eligible_end_at | fromdateiso8601) and
+  (.closed_at | fromdateiso8601) <= $now and
   .real_development_cycle.completed == true and
+  (.real_development_cycle.completed_at | fromdateiso8601) >= (.started_at | fromdateiso8601) and
   (.real_development_cycle.completed_at | fromdateiso8601) <= (.closed_at | fromdateiso8601) and
   (.real_development_cycle.evidence | strings | length) > 0 and
   ([.blocking_signals[].class] | sort) == ([
