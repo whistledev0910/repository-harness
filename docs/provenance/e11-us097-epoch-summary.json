@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "story_id": "US-097",
+  "completed_at": "2026-07-12T08:28:44Z",
+  "partition_commit": "1418a6437aa5a4d8c9420172a8430ea0ea555c54",
+  "external_artifact_root": "/Users/themrb/Documents/personal/e11-migration-artifacts/US-097-20260712",
+  "cutoff": {
+    "frozen_baseline_files": 32,
+    "partition_files": 46,
+    "derived_delta_files": 14,
+    "missing_or_modified_baseline_files": 0,
+    "bundle_sha256": "c989a21c6f10ed2bdd842dc064d1665577db62766a6646f19d5b72208c51c0f2"
+  },
+  "source_epoch": {
+    "snapshot_file_sha256": "bde51a2f69d3d783f664e5570d75d805834eafa930cbb16c14fc8ee296492081",
+    "snapshot_logical_sha256": "d78868d4c7cca95798a8eeedd5675bf357f9d332ea7f37b6e4b1c0865eba7654",
+    "journal_legacy_db_sha256": "1e2d48807b54bf3f1fee4a08f4c98396e863791c4cbe368143f94969c9b985ad",
+    "journal_legacy_log_sha256": "903ec025368856cde5d445d4ef3f97744eb09a50ef8cf8cdd3e0659e0bfacf10"
+  },
+  "fresh_core_epoch": {
+    "journal_db_sha256": "3fd5f84aa1c5a0bbeff9f565671d5f8229a3ad4cbd0a8d541c4e3c9ba6582c22",
+    "journal_log_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "stories": 55,
+    "traces": 149,
+    "backlog_items": 11,
+    "tools": 1,
+    "schema_version": 13,
+    "applied_legacy_changesets": 0
+  },
+  "dispositions": {
+    "ledger_sha256": "0ff5d656d24919c6e3a7de7ab53f7b241b77c5ba64586ddb330e7eea701edde2",
+    "retain_core": 380,
+    "archive_only": 255,
+    "derive": 43,
+    "move_target": 1,
+    "discard": 0,
+    "foreign_key_violations": 0,
+    "missing_or_unexpected_identity_rows": 0
+  },
+  "target_epoch": {
+    "pre_snapshot_file_sha256": "c0e6da84d607b52c6f2ddd4e49e7d0704da70200f4adad4410deec1aa6504476",
+    "pre_snapshot_logical_sha256": "18d877296a6fb161ac304114a6d3b8e0a29fb029a13f5495e1a12db9a98a6e18",
+    "post_snapshot_file_sha256": "b32f2fb93e3478bdc20d76bb093c1afd65c2519d85ee4d605089cace3d2f12fc",
+    "post_snapshot_logical_sha256": "fb6882cc194119c75e420e745f2674bb08878cb8092d06a840992c86287bc867",
+    "carried_backlog_source_id": 10,
+    "carried_backlog_uid": "blg_a7117d660af99f206c4662bdb3d2fbaf",
+    "changeset_content_sha256": "dc689913b39f57c624e83cd4c6c3772cfd657fcdc0c83f3dbd5bb5f854bcbaad",
+    "first_apply": true,
+    "second_apply": false,
+    "tracked_or_active_changesets": 0
+  },
+  "transition": {
+    "id": "e11-us097-core-epoch-20260712",
+    "state": "complete",
+    "journal_sha256": "f00443626901c328e9fac8bd5d22062532017e957ec1b6dcf862ff62e107f8ed",
+    "journal_payload_sha256": "87b2f37daa2ffcb3add11179e8066a56b980ad6848de12287b5a6d11e18e065c",
+    "crash_cases": 10,
+    "recovery_strategies": ["forward", "compensate"]
+  },
+  "validation": {
+    "inventory_report_sha256": "0cabdb6ac136e5d28e888607c409bb688a61eda3dc7d1c0180cdd7228c10b6f0",
+    "generic_fixture_changesets": 4,
+    "generic_fixture_operations": 22,
+    "harness_cli_tests": 81,
+    "audit_entropy_before_story_completion": 5,
+    "wrong_owner_runnable_rows": 0,
+    "consumer_changeset_trackable": true
+  }
+}

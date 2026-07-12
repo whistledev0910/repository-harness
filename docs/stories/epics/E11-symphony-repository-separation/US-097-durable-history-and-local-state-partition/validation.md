@@ -47,7 +47,26 @@ rule still works.
 
 ## Acceptance Evidence
 
-Pending implementation. Attach backup verification, fixture coverage mapping,
-all-table row-disposition/FK export, per-table count/UID comparison, epoch-state
-report, crash-recovered DB/log pair proof, preserved E11 proxy/edge proof,
-fresh-consumer tracking proof, and rollback rehearsal.
+Implemented on 2026-07-12. The committed evidence index is
+`docs/provenance/e11-us097-epoch-summary.json`; its sidecar binds the summary to
+the external owner-only recovery bundle.
+
+- The frozen 32-file baseline reconciled to a 46-file cutoff with a derived
+  14-file delta and no missing or modified baseline file.
+- All 679 legacy rows received one reviewed disposition: 380 retained core,
+  255 archived Symphony, 43 regenerated epoch rows, and one target carry-forward.
+- The fresh schema-13 core contains 55 stories, 149 traces, 11 backlog items,
+  one reset/recomputed core tool, and zero applied legacy changesets.
+- Source, fresh core, and target comparisons have zero missing, unexpected, or
+  foreign-key-invalid identity rows. The only physical overlap is the explicit
+  coordinated E11 receipt evidence allowlist.
+- Target backlog `#10` became stable UID
+  `blg_a7117d660af99f206c4662bdb3d2fbaf`; first apply changed one row and the
+  content-identical second apply was a no-op. Items `#11`, `#12`, and `#14`
+  remain explicitly archived/superseded.
+- The checksummed journal switched the DB/log pair under a writer fence. Ten
+  crash cases proved both forward and compensating recovery before the real
+  transition was marked complete.
+- Four product-neutral changesets cover 22 replay operations; 81 CLI tests,
+  fresh-consumer changeset tracking, audit/proposal/matrix/backlog/tools, and
+  no-live-root-log checks passed.
