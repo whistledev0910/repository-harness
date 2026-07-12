@@ -1,0 +1,9 @@
+{"base_schema_version":13,"op":"changeset.header","run_id":"run_1783827600_us093_source_proxy_handoff","version":1}
+{"id":"US-093","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":"changed","unit_proof":null,"verify_command":null},"version":1}
+{"id":"US-094","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":"changed","unit_proof":null,"verify_command":null},"version":1}
+{"id":"US-095","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":"changed","unit_proof":null,"verify_command":null},"version":1}
+{"id":"US-096","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":"changed","unit_proof":null,"verify_command":null},"version":1}
+{"id":"US-093","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":null,"unit_proof":null,"verify_command":"scripts/verify-e11-external-gate.sh US-093"},"version":1}
+{"id":"US-094","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":null,"unit_proof":null,"verify_command":"scripts/verify-e11-external-gate.sh US-094"},"version":1}
+{"id":"US-095","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":null,"unit_proof":null,"verify_command":"scripts/verify-e11-external-gate.sh US-095"},"version":1}
+{"id":"US-096","op":"story.update","payload":{"e2e_proof":null,"evidence":null,"integration_proof":null,"platform_proof":null,"status":null,"unit_proof":null,"verify_command":"scripts/verify-e11-external-gate.sh US-096"},"version":1}
