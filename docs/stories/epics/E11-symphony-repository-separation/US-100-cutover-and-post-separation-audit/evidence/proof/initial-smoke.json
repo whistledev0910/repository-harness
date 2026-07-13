@@ -1,0 +1,59 @@
+{
+  "result": "pass",
+  "harness": {
+    "label": "harness-cli-v0.1.14",
+    "sha256": "0adcd5360cd636c189fe0cd958e5b73261f7012a4e43631f08c61269c785caf9",
+    "contract": {
+      "operation": "query.contract",
+      "protocol_version": 1,
+      "request_id": "req-81088-1783871476670429000",
+      "result": {
+        "capabilities": [
+          "changesets.apply.v1",
+          "changesets.status-sha.v1",
+          "isolated-db-snapshot.v1",
+          "isolated-db.v1",
+          "semantic-operation-log.v1",
+          "stories.read.v1",
+          "stories.write.v1",
+          "story-dependencies.read-write.v1",
+          "story-hierarchy.read-write.v1",
+          "work-graph.read.v1"
+        ],
+        "cli_version": "0.1.14",
+        "database_schema_version": 13,
+        "database_state": "current",
+        "protocol_version": 1,
+        "required_environment_variables": [
+          "HARNESS_DB_PATH"
+        ],
+        "schema_maximum": 13,
+        "schema_minimum": 1
+      }
+    }
+  },
+  "symphony": {
+    "sha256": "3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7",
+    "contract": {
+      "symphony_version": "0.1.1",
+      "harness_protocol_version": 1,
+      "harness_schema_minimum": 1,
+      "harness_schema_maximum": 13,
+      "current_harness_schema_minimum": 12,
+      "current_harness_schema_maximum": 13,
+      "supported_harness_cli_versions": [
+        "0.1.14",
+        "0.1.15"
+      ]
+    }
+  },
+  "run_id": "run_1783871477476081000_81235_0",
+  "logical_before": "f829decf50b77e4e551a733be6bd8adea7ecf38f889ce390a9e8ae8d638bdbc0",
+  "logical_after": "83d255f347b86895e2d17a3d244b855728c2c5c20c11624299e61b181f7b1c2d",
+  "prepare_only": true,
+  "doctor": true,
+  "work_list": true,
+  "web": true,
+  "sync_applied_operations": 3,
+  "sync_noop_operations": 0
+}

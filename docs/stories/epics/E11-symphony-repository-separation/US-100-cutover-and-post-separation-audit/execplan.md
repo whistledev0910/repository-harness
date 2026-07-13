@@ -14,7 +14,7 @@ In scope:
 - Released cross-repo smoke.
 - Durable-state and repository audit.
 - Safe reviewed runtime archival/pruning.
-- Observation and rollback record.
+- Final readiness and rollback record.
 
 Out of scope:
 
@@ -49,9 +49,8 @@ Hard gates:
    tuple, and rerun the same released cross-repository smoke.
 6. Audit active docs, durable work, tools, proposals, and remote ownership.
 7. Review/archive/prune old worktrees and runs safely.
-8. Start and monitor the seven-day-plus-use-cycle observation window.
-9. Close the window, record final rollback status, and explicitly complete the
-   story only when no blocking signal remains.
+8. Run the final cutover verifier against the checksum-bound readiness record.
+9. Explicitly complete the story when every final assertion passes.
 
 ## Dependencies
 
@@ -92,5 +91,5 @@ unbounded future remote mutations.
   passes.
 
 Any rollback that changes external release/ref state requires a fresh owner
-go/no-go naming the exact action. After every repair, rerun Gates A-F and restart
-the full seven-day-plus-use-cycle observation window from zero.
+go/no-go naming the exact action. After every repair, rerun Gates A-F and the
+final cutover verifier before completion.

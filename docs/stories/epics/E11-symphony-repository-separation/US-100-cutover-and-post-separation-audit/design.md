@@ -26,7 +26,8 @@ merge target
   -> smoke the same Symphony artifact against the cleaned tag
   -> audit durable state/docs/remotes
   -> prune reviewed local runtime
-  -> start observation window
+  -> verify the final checksum-bound cutover tuple
+  -> explicitly complete US-100
 ```
 
 ## Interface Contract
@@ -49,8 +50,7 @@ packaged desktop opens a normal Harness project without expecting source paths.
 ## Observability
 
 Post-cutover evidence captures versions, checksums, command output, audit and
-proposal results, remote refs, and observation-window owner/start/end/blocking
-signals.
+proposal results, remote refs, runtime disposition, and rollback proof.
 
 ## Alternatives Considered
 

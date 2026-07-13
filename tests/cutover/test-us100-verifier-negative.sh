@@ -33,6 +33,13 @@ jq '.symphony.archive_sha256 = ("0" * 64)' "$case_dir/premerge-released-cross-re
 mv "$case_dir/new" "$case_dir/premerge-released-cross-repo-smokes.json"
 expect_develop_failure "$case_dir" "a smoke detached from the released Symphony archive"
 
+case_dir="$tmp/substituted-symphony-release"
+make_evidence "$case_dir"
+jq '.tag = "symphony-v9.9.9" | .source_commit = ("f" * 40) | .release_url = "https://github.com/hoangnb24/symphony/releases/tag/symphony-v9.9.9"' \
+  "$case_dir/symphony-release.json" >"$case_dir/new"
+mv "$case_dir/new" "$case_dir/symphony-release.json"
+expect_develop_failure "$case_dir" "an arbitrary Symphony release substitution"
+
 case_dir="$tmp/wrong-initial-cli"
 make_evidence "$case_dir"
 jq '(.scenarios[] | select(.name == "initial-protocol-release") | .harness_cli_sha256) = ("0" * 64)' \
@@ -54,4 +61,4 @@ jq '(.scenarios[] | select(.name == "cleaned-develop-candidate") | .harness_sour
 mv "$case_dir/new" "$case_dir/premerge-released-cross-repo-smokes.json"
 expect_develop_failure "$case_dir" "an unknown candidate commit"
 
-echo "US-100 develop verifier rejects detached artifacts, weak state proof, and untested candidates"
+echo "US-100 develop verifier rejects substituted releases, detached artifacts, weak state proof, and untested candidates"

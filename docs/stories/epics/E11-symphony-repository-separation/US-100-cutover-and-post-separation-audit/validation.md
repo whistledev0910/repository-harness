@@ -14,7 +14,7 @@ wrong-owner active context in both repositories.
 | E2E | For each named tag: doctor -> work -> prepare -> deterministic execute -> Web -> sync. |
 | Platform | Published native CLI artifacts and desktop smoke limitations. |
 | Performance | Record startup/run smoke times for regression reference. |
-| Logs/Audit | Remote refs, versions, active durable state, worktree disposition, observation window. |
+| Logs/Audit | Remote refs, versions, active durable state, worktree disposition, and rollback proof. |
 
 ## Fixtures
 
@@ -61,39 +61,42 @@ git diff --check
 
 ## Acceptance Evidence
 
-Develop-candidate evidence is implemented: the published Symphony release and
-checksums, initial-protocol and cleaned-develop artifact smokes, source durable
-boundary, canonical target ownership assertion, and rollback rehearsal are
+Develop-candidate evidence is implemented: historical Symphony `v0.1.0`
+initial-protocol and cleaned-develop artifact smokes remain preserved, while
+the current published compatible Symphony `v0.1.1` release and checksums,
+source durable boundary, canonical target ownership assertion, and rollback rehearsal are
 available under `evidence/` and `tests/cutover/`.
 
-Cutover acceptance remains pending. The final report must additionally name
-the cleaned Harness release SHA/tag and checksums, both released protocol
-tuples and smoke outputs, completed runtime disposition, active-state audit,
-and eligible observation-window end condition. Develop-candidate proof must
-not be presented as evidence that those post-merge requirements have passed.
+Cutover readiness passed at `2026-07-12T15:54:50Z`. The checksummed
+record names the cleaned Harness release SHA/tag and checksums, both released
+protocol tuples and smoke outputs, completed runtime disposition, active-state
+audit, and the clean release install. Final acceptance repeats those assertions
+before explicit story completion.
+Both readiness smokes must use the exact `v0.1.1` archive; the historical
+`v0.1.0` smoke cannot substitute for post-merge compatibility proof.
 
 ## Executable Story Gate
 
-Use the readiness gate after both releases and both released smokes exist, but
-before starting the observation window:
+Use the readiness gate after both releases and both released smokes exist:
 
 ```bash
 scripts/verify-e11-us100.sh --readiness
 ```
 
-Cause and effect: readiness proves that cutover is safe enough to observe, but
-it also asserts that `US-100` is still `in_progress`. It cannot complete the
-story.
+Cause and effect: readiness proves the cutover tuple while asserting that
+`US-100` is still `in_progress`. Explicit completion remains a separate,
+auditable lifecycle action.
 
-After at least seven calendar days **and** one complete real development/use
-cycle, record the clear blocking-signal audit and run:
+Repeat the complete readiness assertions through the final gate:
 
 ```bash
-tests/cutover/test-us100-observation-gate.sh
 scripts/verify-e11-us100.sh --final
 ```
 
-The final mode repeats every readiness assertion, then validates the
-observation record. An early close, missing use cycle, blocking signal, or
-repair inside the counted window fails closed. A repair therefore creates a
-new start time and restarts all seven days instead of reusing elapsed time.
+The final mode repeats every readiness assertion and authorizes explicit story
+completion only when the exact release, smoke, install, ownership, runtime,
+rollback, and referenced-file checks all still pass.
+
+Final acceptance passed on 2026-07-12. `harness-cli story complete US-100`
+reran `scripts/verify-e11-us100.sh --final`, recorded a passing result, and
+atomically marked the story implemented.

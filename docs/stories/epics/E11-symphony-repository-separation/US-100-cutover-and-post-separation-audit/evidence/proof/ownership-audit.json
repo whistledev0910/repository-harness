@@ -1,0 +1,49 @@
+{
+  "schema": "e11-us100-canonical-ownership-audit-v1",
+  "recorded_at": "2026-07-12T15:54:50Z",
+  "status": "pass",
+  "commands": [
+    "matrix",
+    "backlog",
+    "tools",
+    "audit",
+    "improvement-health",
+    "propose"
+  ],
+  "matrix": {
+    "command": "scripts/bin/harness-cli query matrix",
+    "output_sha256": "8d9100073dd732dd95f25cfbf1392ef31e9d21680182fe441dcacbd459f14492",
+    "us100_status": "in_progress",
+    "symphony_receipt_proxies": [
+      "US-093",
+      "US-094",
+      "US-095",
+      "US-096"
+    ]
+  },
+  "backlog": {
+    "command": "scripts/bin/harness-cli query backlog --open",
+    "output": "id  title                                       status    risk    predicted_impact                                                                                                   actual_outcome\n--  ------------------------------------------  --------  ------  -----------------------------------------------------------------------------------------------------------------  --------------\n3   Add trace quality audit query               proposed  normal  Future agents can see trace quality regressions quickly and Phase 3 observability has a concrete starting point.                 \n4   Triage friction into backlog outcomes       proposed  normal  Backlog becomes a cleaner improvement queue and old friction stops competing with current Phase 2 follow-up work.                \n5   Detect invalid zero-token benchmark runs    proposed  normal  Prevents invalid benchmark reruns from being mistaken for harness regressions.                                                   \n8   Benchmark needs local Phase 5 install path  proposed  normal  Phase benchmark runs can exercise the intended branch state instead of a stale published CLI                                     \n"
+  },
+  "tools": {
+    "command": "scripts/bin/harness-cli query tools --summary",
+    "output": "name                      kind     capability  responsibility          status   source    \n------------------------  -------  ----------  ----------------------  -------  ----------\ninit                      builtin  -           Task state              present  compiled  \nmigrate                   builtin  -           Task state              present  compiled  \nimport brownfield         builtin  -           Project memory          present  compiled  \nintake                    builtin  -           Task specification      present  compiled  \nstory add                 builtin  -           Task state              present  compiled  \nstory update              builtin  -           Task state              present  compiled  \nstory verify              builtin  -           Verification            present  compiled  \nstory complete            builtin  -           Task state              present  compiled  \nstory verify-all          builtin  -           Verification            present  compiled  \ndecision add              builtin  -           Project memory          present  compiled  \ndecision verify           builtin  -           Verification            present  compiled  \nbacklog add               builtin  -           Entropy auditing        present  compiled  \nbacklog close             builtin  -           Entropy auditing        present  compiled  \nbacklog reconcile         builtin  -           Entropy auditing        present  compiled  \nbacklog outcome record    builtin  -           Entropy auditing        present  compiled  \ntrace                     builtin  -           Observability           present  compiled  \nscore-trace               builtin  -           Observability           present  compiled  \nscore-context             builtin  -           Context selection       present  compiled  \naudit                     builtin  -           Entropy auditing        present  compiled  \npropose                   builtin  -           Entropy auditing        present  compiled  \nquery matrix              builtin  -           Task state              present  compiled  \nquery backlog             builtin  -           Entropy auditing        present  compiled  \nquery improvement-health  builtin  -           Entropy auditing        present  compiled  \nquery decisions           builtin  -           Project memory          present  compiled  \nquery intakes             builtin  -           Task specification      present  compiled  \nquery traces              builtin  -           Observability           present  compiled  \nquery friction            builtin  -           Failure attribution     present  compiled  \nquery interventions       builtin  -           Intervention recording  present  compiled  \nquery stats               builtin  -           Task state              present  compiled  \nquery tools               builtin  -           Tool access             present  compiled  \nquery sql                 builtin  -           Tool access             present  compiled  \ntool register             builtin  -           Tool access             present  compiled  \ntool remove               builtin  -           Tool access             present  compiled  \nintervention add          builtin  -           Intervention recording  present  compiled  \ncargo-workspace-tests     cli      coverage    Verification            unknown  registered\n",
+    "broken_tools": 0
+  },
+  "audit": {
+    "command": "scripts/bin/harness-cli audit",
+    "output": "=== Harness Drift Audit ===\n\nOrphaned stories (planned/in-progress, no traces): 0\n\nUnverified stories: 0\n\nUnverified decisions: 0\n\nOpen backlog without outcomes: 0\n\nStale stories: 0\n\nBroken tools: 0\nEntropy score: 0/100 (lower is better)\n",
+    "entropy": 0
+  },
+  "improvement_health": {
+    "command": "scripts/bin/harness-cli query improvement-health",
+    "output": "=== Daily Improvement Health ===\nAudit entropy: 0/100\nActionable drift: 0\ncategory  id  title  state  schedule  outcome  evidence  next_action\n--------  --  -----  -----  --------  -------  --------  -----------\n",
+    "actionable_drift": 0
+  },
+  "propose": {
+    "command": "scripts/bin/harness-cli propose",
+    "output": "=== Improvement Proposals ===\nNo proposals generated.\n",
+    "generated": 0
+  },
+  "durable_state_boundary": "pass"
+}

@@ -26,15 +26,15 @@ jq -n --argjson platforms "$platforms" --argjson capabilities "$capabilities" '
   def contract($version): {protocol_version:1,cli_version:$version,schema_minimum:1,schema_maximum:13,database_schema_version:13,capabilities:$capabilities};
   {
     schema:"e11-us100-cutover-readiness-v1",
-    symphony:{tag:"symphony-v0.1.0",source_commit:"2357bc4f333a12794f975a46dbc0df96599fe4c0"},
+    symphony:{tag:"symphony-v0.1.1",source_commit:"2f0b257a0b145287c4b3b9e254fea5eca454c228"},
     harness:{
       initial_protocol:{tag:"harness-cli-v0.1.14",source_commit:"d2f89eeabe8d01df95fd19cd6ba981b01a71730f",tag_peeled_commit:"d2f89eeabe8d01df95fd19cd6ba981b01a71730f",release_verified:true,release_metadata_sha256:("b"*64),archives:archives},
       cleaned_core:{tag:"harness-cli-v0.1.15",source_commit:("1"*40),tag_peeled_commit:("1"*40),release_verified:true,published_at:"2026-07-12T12:00:00Z",release_url:"https://github.com/hoangnb24/repository-harness/releases/tag/harness-cli-v0.1.15",release_metadata_sha256:("c"*64),archives:archives}
     },
     contracts:{initial_protocol:contract("0.1.14"),cleaned_core:contract("0.1.15")},
     smokes:{
-      initial_protocol:{status:"pass",symphony_archive_sha256:"eb9d56bde05581c1fba56984937159218d4829b339385eb4ebafce835c049d90",harness_platform:"mac-arm64",harness_cli_sha256:((3|tostring)+("a"*63)),output_sha256:("4"*64)},
-      cleaned_core:{status:"pass",symphony_archive_sha256:"eb9d56bde05581c1fba56984937159218d4829b339385eb4ebafce835c049d90",harness_platform:"mac-arm64",harness_cli_sha256:((3|tostring)+("a"*63)),output_sha256:("6"*64)}
+      initial_protocol:{status:"pass",symphony_archive_sha256:"3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7",harness_platform:"mac-arm64",harness_cli_sha256:((3|tostring)+("a"*63)),output_sha256:("4"*64)},
+      cleaned_core:{status:"pass",symphony_archive_sha256:"3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7",harness_platform:"mac-arm64",harness_cli_sha256:((3|tostring)+("a"*63)),output_sha256:("6"*64)}
     },
     clean_harness_install:{status:"pass",tag:"harness-cli-v0.1.15",output_sha256:("7"*64)},
     canonical_ownership_audit:{status:"pass",output_sha256:("8"*64),commands:["matrix","backlog","tools","audit","improvement-health","propose"]},
@@ -51,6 +51,22 @@ jq -n --argjson platforms "$platforms" --argjson capabilities "$capabilities" '
     recorded_at:"2026-07-12T12:00:00Z"
   }
 ' >"$tmp/base.json"
+
+# The complete valid shape must reach evidence-file verification. This guards
+# the jq binding/precedence around the cleaned release version before negative
+# schema mutations are exercised.
+case_dir="$tmp/valid-shape"
+make_evidence "$case_dir"
+cp "$tmp/base.json" "$case_dir/cutover-readiness.json"
+if US100_EVIDENCE_DIR="$case_dir" "$ROOT_DIR/scripts/verify-e11-us100.sh" --readiness >"$tmp/out" 2>"$tmp/err"; then
+  echo "synthetic readiness unexpectedly passed without referenced proof files" >&2
+  exit 1
+fi
+grep -q 'required evidence is missing:.*proof/clean-install.json' "$tmp/err" || {
+  echo "valid readiness shape did not reach evidence-file verification" >&2
+  cat "$tmp/err" >&2
+  exit 1
+}
 
 expect_schema_failure() {
   local filter=$1 description=$2 case_dir="$tmp/case"
@@ -73,5 +89,6 @@ expect_schema_failure '.contracts.cleaned_core.capabilities = []' "an empty capa
 expect_schema_failure '.smokes.cleaned_core = {status:"pass"}' "a status-only smoke"
 expect_schema_failure '.canonical_ownership_audit = {status:"pass"}' "a status-only ownership audit"
 expect_schema_failure '.harness.cleaned_core.archives[0].sidecar_verified = false' "an unverified checksum sidecar"
+expect_schema_failure '.symphony = {tag:"symphony-v9.9.9",source_commit:("f"*40)}' "an arbitrary Symphony release substitution"
 
 echo "US-100 readiness schema rejects duplicate artifacts, incomplete contracts, and status-only proof"

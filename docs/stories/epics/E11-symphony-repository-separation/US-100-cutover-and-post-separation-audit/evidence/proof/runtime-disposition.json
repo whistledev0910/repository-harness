@@ -1,0 +1,38 @@
+{
+  "schema": "e11-us100-runtime-disposition-binding-v1",
+  "recorded_at": "2026-07-12T15:54:50Z",
+  "status": "complete",
+  "reviewed": true,
+  "source_path": "runtime-disposition.json",
+  "source_sha256": "9fe6edd6b963026b56a88a2f76858c03f88bc2d5d0a0b6bc30760e742a304cea",
+  "record": {
+    "schema": "e11-us100-runtime-disposition-v1",
+    "recorded_at": "2026-07-12T15:03:18Z",
+    "status": "complete",
+    "reviewed": true,
+    "authorization": "owner-approved removal of the 15 verified legacy worktrees and .impeccable; Harness main PR explicitly deferred",
+    "source_commit_before_cleanup": "0453a45a7bf4d001e7f3612d748871899a1263b0",
+    "archive": {
+      "manifest": "US-089-separation-boundary-and-frozen-baselines/evidence/worktree-backups.json",
+      "manifest_sha256": "cd1ef20db1a01d273a69324d8639dc4423fbbe89e564c806fb3d6ebbd1e4be5f",
+      "worktrees_verified_before_removal": 15,
+      "all_patch_identities_matched": true,
+      "all_restore_rehearsals_passed": true,
+      "untracked_files_before_removal": 0
+    },
+    "removal": {
+      "registered_worktrees_removed": 15,
+      "symphony_branches_removed": 0,
+      "symphony_branches_preserved": 15,
+      "impeccable_files_removed": 2,
+      "changeset_files_removed": 0
+    },
+    "post_cleanup": {
+      "registered_legacy_worktrees": 0,
+      "impeccable_files": 0,
+      "changeset_files": 0,
+      "audit_command": "tests/cutover/audit-us100-runtime-disposition.sh --expect-clean",
+      "audit_status": "pass"
+    }
+  }
+}

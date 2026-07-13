@@ -1,0 +1,58 @@
+{
+  "schema": "e11-us100-harness-contract-proof-v1",
+  "recorded_at": "2026-07-12T15:54:50Z",
+  "release": {
+    "tag": "harness-cli-v0.1.14",
+    "source_commit": "d2f89eeabe8d01df95fd19cd6ba981b01a71730f",
+    "tag_peeled_commit": "d2f89eeabe8d01df95fd19cd6ba981b01a71730f",
+    "published_at": "2026-07-12T03:19:27Z",
+    "release_url": "https://github.com/hoangnb24/repository-harness/releases/tag/harness-cli-v0.1.14",
+    "verified_at": "2026-07-12T15:54:50Z",
+    "archives": [
+      {
+        "platform": "linux-arm64",
+        "sha256": "8828d624075fbae2f44b6f57ac651bdacb2e7c60ed0cc15853b9481b3edf0161"
+      },
+      {
+        "platform": "linux-x64",
+        "sha256": "d2551d32490d0af78f8eb387d8854771ebfcde2260b068539384592668cc54a6"
+      },
+      {
+        "platform": "mac-arm64",
+        "sha256": "0adcd5360cd636c189fe0cd958e5b73261f7012a4e43631f08c61269c785caf9"
+      },
+      {
+        "platform": "mac-x64",
+        "sha256": "d0ee0b6b9f702eb87824e96b42d7a8382012b542a076e8ce2d0b1bb8d6201168"
+      },
+      {
+        "platform": "windows-x64",
+        "sha256": "abd5a4176d52b3576c66932f44f377d2667fba409011de145044f425fd0a82ca"
+      }
+    ]
+  },
+  "release_metadata_sha256": "b7c1da4a8ec429c8d9c75b5ea991cd0129f8c866ec2e82d550699da6f35068b0",
+  "contract": {
+    "capabilities": [
+      "changesets.apply.v1",
+      "changesets.status-sha.v1",
+      "isolated-db-snapshot.v1",
+      "isolated-db.v1",
+      "semantic-operation-log.v1",
+      "stories.read.v1",
+      "stories.write.v1",
+      "story-dependencies.read-write.v1",
+      "story-hierarchy.read-write.v1",
+      "work-graph.read.v1"
+    ],
+    "cli_version": "0.1.14",
+    "database_schema_version": 13,
+    "database_state": "current",
+    "protocol_version": 1,
+    "required_environment_variables": [
+      "HARNESS_DB_PATH"
+    ],
+    "schema_maximum": 13,
+    "schema_minimum": 1
+  }
+}

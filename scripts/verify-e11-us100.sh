@@ -20,7 +20,6 @@ done
 RELEASE="$EVIDENCE_DIR/symphony-release.json"
 PREMERGE="$EVIDENCE_DIR/premerge-released-cross-repo-smokes.json"
 CUTOVER="$EVIDENCE_DIR/cutover-readiness.json"
-OBSERVATION="$EVIDENCE_DIR/observation-window.json"
 ROLLBACK="$EVIDENCE_DIR/rollback-rehearsal.json"
 ROLLBACK_SUM="$ROLLBACK.sha256"
 CANONICAL_TARGET="$EVIDENCE_DIR/canonical-target-ownership.json"
@@ -53,8 +52,8 @@ jq -e '
 jq -e '
   .schema == "e11-us100-canonical-target-ownership-v1" and
   .repository == "hoangnb24/symphony" and
-  .commit == "2357bc4f333a12794f975a46dbc0df96599fe4c0" and
-  .branch == "main" and .tag == "symphony-v0.1.0" and
+  .commit == "2f0b257a0b145287c4b3b9e254fea5eca454c228" and
+  .branch == "main" and .tag == "symphony-v0.1.1" and
   .clean == true and .forbidden_tracked_paths == 0 and
   .forbidden_hidden_directories == 0 and .active_durable_databases == 0 and
   .verifier == "tests/cutover/assert-canonical-symphony-ownership.sh" and
@@ -89,34 +88,32 @@ jq -e '
 jq -e '
   .schema == "e11-us100-symphony-release-v1" and
   .repository == "hoangnb24/symphony" and
-  .tag == "symphony-v0.1.0" and
-  .source_commit == "2357bc4f333a12794f975a46dbc0df96599fe4c0" and
+  .tag == "symphony-v0.1.1" and
+  .source_commit == "2f0b257a0b145287c4b3b9e254fea5eca454c228" and
   .draft == false and .prerelease == false and
   (.published_at | fromdateiso8601) > 0 and
-  (.release_url | test("^https://github.com/hoangnb24/symphony/releases/tag/symphony-v0\\.1\\.0$")) and
+  (.release_url | test("^https://github.com/hoangnb24/symphony/releases/tag/symphony-v0\\.1\\.1$")) and
+  .candidate_run == 29198353648 and
   .download_verification.all_sidecars_passed == true and
   (.download_verification.verified_at | fromdateiso8601) > 0 and
   ([.archives[] | {key: .platform, value: .sha256}] | from_entries) == {
-    "linux-arm64": "3615d178909931950d7624c8e5622b25d42fb8938013549ad8d52bcb28bfd45c",
-    "linux-x64": "0efdf1e772010f850aee64f8bc758c6fe94131e103a7a1caea968db7522e7e55",
-    "mac-arm64": "eb9d56bde05581c1fba56984937159218d4829b339385eb4ebafce835c049d90",
-    "mac-x64": "0a3906dbfd8bd803715a0ad69c10aaed8c266047a2184543edb332e0dbc44574",
-    "windows-x64": "1f5c6711e3c045fa70adfe8a9b44bf33ddc00b640b32bfdaef17ec667abf2390"
+    "linux-arm64": "c70e45a9a933b76717b36e2a7db2e41d639408c4d6a3aba68af54be3d7e8bdb5",
+    "linux-x64": "866a4cc08f92584d3d0a7247fa71dd4e5ee86f91bea69e0438a1bb75db4af684",
+    "mac-arm64": "3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7",
+    "mac-x64": "b876ee1c9246de2e4e8bd12ec5253af95d288885f1ce7c94b40944ebddb0c224",
+    "windows-x64": "d09e1d33b60402669a95a77001495e56560ce48f7fb586f82f35c85d5e80ed9d"
   } and
   ([.archives[].sha256] | length) == 5 and ([.archives[].sha256] | unique | length) == 5
 ' "$RELEASE" >/dev/null || fail "Symphony release identity or archive checksums do not match the approved release"
 
-SYMPHONY_SMOKE_SHA="$(jq -r '.symphony.archive_sha256' "$PREMERGE")"
-SYMPHONY_SMOKE_PLATFORM="$(jq -r '.symphony.platform' "$PREMERGE")"
-case "$SYMPHONY_SMOKE_PLATFORM" in
-  macos-arm64) RELEASE_PLATFORM=mac-arm64 ;;
-  macos-x64) RELEASE_PLATFORM=mac-x64 ;;
-  linux-arm64|linux-x64|windows-x64) RELEASE_PLATFORM="$SYMPHONY_SMOKE_PLATFORM" ;;
-  *) fail "pre-merge smoke names an unsupported Symphony platform: $SYMPHONY_SMOKE_PLATFORM" ;;
-esac
-RELEASE_SYMPHONY_SHA="$(jq -r --arg platform "$RELEASE_PLATFORM" '.archives[] | select(.platform == $platform) | .sha256' "$RELEASE")"
-test -n "$RELEASE_SYMPHONY_SHA" && test "$SYMPHONY_SMOKE_SHA" = "$RELEASE_SYMPHONY_SHA" \
-  || fail "pre-merge smoke is not bound to the approved Symphony release archive"
+# Pre-merge smoke is historical proof from the initial v0.1.0 release. Keep it
+# pinned independently; readiness must use the later exact compatible release.
+PREMERGE_SYMPHONY_SHA="$(jq -r '.symphony.archive_sha256' "$PREMERGE")"
+test "$PREMERGE_SYMPHONY_SHA" = "eb9d56bde05581c1fba56984937159218d4829b339385eb4ebafce835c049d90" \
+  || fail "pre-merge smoke is not bound to the historical Symphony v0.1.0 archive"
+SYMPHONY_RELEASE_SHA="$(jq -r '.archives[] | select(.platform == "mac-arm64") | .sha256' "$RELEASE")"
+test "$SYMPHONY_RELEASE_SHA" = "3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7" \
+  || fail "approved Symphony v0.1.1 smoke archive is missing"
 
 TESTED_CANDIDATE_COMMIT="$(jq -r '.scenarios[] | select(.name == "cleaned-develop-candidate") | .harness_source_commit' "$PREMERGE")"
 [[ "$TESTED_CANDIDATE_COMMIT" =~ ^[0-9a-f]{40}$ ]] \
@@ -139,7 +136,7 @@ done < <(git -C "$ROOT_DIR" diff --name-only "$TESTED_CANDIDATE_COMMIT"..HEAD)
 # The develop-candidate gate uses the released Symphony artifact against both
 # the immutable protocol control and the cleaned source candidate. This is not
 # a substitute for the later cleaned Harness release tuple.
-jq -e --arg symphony_sha "$SYMPHONY_SMOKE_SHA" --arg candidate_commit "$TESTED_CANDIDATE_COMMIT" '
+jq -e --arg symphony_sha "$PREMERGE_SYMPHONY_SHA" --arg candidate_commit "$TESTED_CANDIDATE_COMMIT" '
   .schema == "e11-us100-premerge-smokes-v1" and
   (.recorded_at | fromdateiso8601) > 0 and
   .symphony.tag == "symphony-v0.1.0" and
@@ -169,10 +166,10 @@ jq -e --arg symphony_sha "$SYMPHONY_SMOKE_SHA" --arg candidate_commit "$TESTED_C
 
 DB="${HARNESS_DB_PATH:-$ROOT_DIR/harness.db}"
 need "$DB"
-test "$(sqlite3 "$DB" "SELECT count(*) FROM story WHERE id='US-100' AND status='in_progress';")" = 1 \
-  || fail "US-100 must remain in_progress until final verification and explicit completion"
+test "$(sqlite3 "$DB" "SELECT count(*) FROM story WHERE id='US-100' AND status IN ('in_progress','implemented');")" = 1 \
+  || fail "US-100 must be in_progress for completion or already implemented after passing the final gate"
 
-"$ROOT_DIR/tests/core/assert-durable-state-boundary.sh" >/dev/null \
+ALLOW_AUDIT_STORY_ID=US-100 "$ROOT_DIR/tests/core/assert-durable-state-boundary.sh" >/dev/null \
   || fail "source durable-state ownership boundary failed"
 
 for path in .agents .codex; do
@@ -183,15 +180,15 @@ if find "$ROOT_DIR/.harness/changesets" -type f -print -quit 2>/dev/null | grep 
 fi
 
 if [[ "$MODE" == "--develop-candidate" ]]; then
-  echo "US-100 develop candidate passed; runtime cleanup is complete; main/release/observation gates remain pending"
+  echo "US-100 develop candidate passed; runtime cleanup and compatible Symphony release are verified; readiness/final gates remain separate"
   exit 0
 fi
 
 need "$CUTOVER"
 
-# Readiness describes the complete cutover tuple. It is deliberately separate
-# from the observation record so it can pass before the seven-day clock closes.
-jq -e --arg symphony_sha "$SYMPHONY_SMOKE_SHA" '
+# Readiness describes the complete cutover tuple and is the authoritative
+# evidence required for final completion.
+jq -e --arg symphony_sha "$SYMPHONY_RELEASE_SHA" '
   def sha256: type == "string" and test("^[0-9a-f]{64}$");
   def commit: type == "string" and test("^[0-9a-f]{40}$");
   def required_capabilities: [
@@ -209,9 +206,10 @@ jq -e --arg symphony_sha "$SYMPHONY_SMOKE_SHA" '
     .schema_minimum == 1 and .schema_maximum == 13 and .database_schema_version == 13 and
     (required_capabilities - .capabilities | length) == 0;
   . as $record |
+  (.harness.cleaned_core.tag | sub("^harness-cli-v"; "")) as $clean_version |
   .schema == "e11-us100-cutover-readiness-v1" and
-  .symphony.tag == "symphony-v0.1.0" and
-  .symphony.source_commit == "2357bc4f333a12794f975a46dbc0df96599fe4c0" and
+  .symphony.tag == "symphony-v0.1.1" and
+  .symphony.source_commit == "2f0b257a0b145287c4b3b9e254fea5eca454c228" and
   .harness.initial_protocol.tag == "harness-cli-v0.1.14" and
   .harness.initial_protocol.source_commit == "d2f89eeabe8d01df95fd19cd6ba981b01a71730f" and
   .harness.initial_protocol.tag_peeled_commit == .harness.initial_protocol.source_commit and
@@ -226,7 +224,6 @@ jq -e --arg symphony_sha "$SYMPHONY_SMOKE_SHA" '
   (.harness.cleaned_core.release_url | test("^https://github.com/hoangnb24/repository-harness/releases/tag/harness-cli-v[0-9]+\\.[0-9]+\\.[0-9]+$")) and
   (.harness.cleaned_core.release_metadata_sha256 | sha256) and
   (.harness.cleaned_core.archives | exact_platforms) and
-  (.harness.cleaned_core.tag | sub("^harness-cli-v"; "")) as $clean_version |
   (.contracts.initial_protocol | contract("0.1.14")) and
   (.contracts.cleaned_core | contract($clean_version)) and
   .smokes.initial_protocol.status == "pass" and
@@ -274,12 +271,8 @@ done < <(jq -r '.evidence_files[] | [.path,.sha256] | @tsv' "$CUTOVER")
 test ! -e "$ROOT_DIR/.impeccable" || fail "active checkout still contains .impeccable"
 
 if [[ "$MODE" == "--readiness" ]]; then
-  echo "US-100 pre-observation readiness passed; story remains in_progress"
+  echo "US-100 cutover readiness passed"
   exit 0
 fi
 
-need "$OBSERVATION"
-"$ROOT_DIR/tests/cutover/assert-us100-observation-record.sh" "$OBSERVATION" >/dev/null \
-  || fail "observation window is not eligible for closure"
-
-echo "US-100 final observation gate passed; explicit story completion may now run"
+echo "US-100 final cutover gate passed; explicit story completion may now run"

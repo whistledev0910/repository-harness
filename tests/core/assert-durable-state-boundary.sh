@@ -82,16 +82,22 @@ test "$(sqlite3 "$tmp/core.db" "SELECT count(*) FROM tool WHERE name IN ('impecc
 }
 jq -e '[.[] | select(.source == "registered") | select(.name == "impeccable" or (.name | startswith("web-ui-")) or (.command | test("symphony";"i")))] | length == 0' "$tmp/tools.json" >/dev/null
 
-# During US-099's own verification its configured command is intentionally not
-# yet recorded as passing. That single self-reference is the only accepted
-# transient finding; normal completion reduces the score from 5 to zero.
+# During a story's own verification its configured command may intentionally
+# not yet be recorded as passing. US-099 is the historical default; a caller
+# may name exactly one current self-verifying story through
+# ALLOW_AUDIT_STORY_ID. Normal completion reduces the score from 5 to zero.
+allowed_audit_story_id="${ALLOW_AUDIT_STORY_ID:-US-099}"
+allowed_audit_story_title="$(jq -r --arg id "$allowed_audit_story_id" '.result.stories[] | select(.id == $id) | .title' "$tmp/stories.json")"
+test -n "$allowed_audit_story_title" || {
+  echo "allowed audit story is missing: $allowed_audit_story_id" >&2; exit 1;
+}
 audit_score="$(sed -n 's/^Entropy score: \([0-9][0-9]*\)\/100.*/\1/p' "$tmp/audit.txt")"
 [[ "$audit_score" =~ ^[0-9]+$ && "$audit_score" -le 5 ]] || {
   echo "core audit has unexpected entropy" >&2; cat "$tmp/audit.txt" >&2; exit 1;
 }
-unexpected_audit_rows="$(grep -E '^  - ' "$tmp/audit.txt" | grep -v 'US-099: Harness Core Regression Closure' || true)"
+unexpected_audit_rows="$(grep -E '^  - ' "$tmp/audit.txt" | grep -Fv "$allowed_audit_story_id: $allowed_audit_story_title" || true)"
 test -z "$unexpected_audit_rows" || {
-  echo "core audit contains a non-US-099 finding" >&2; printf '%s\n' "$unexpected_audit_rows" >&2; exit 1;
+  echo "core audit contains a finding other than $allowed_audit_story_id" >&2; printf '%s\n' "$unexpected_audit_rows" >&2; exit 1;
 }
 for output in "$tmp/backlog.txt" "$tmp/improvement-health.txt" "$tmp/audit.txt" "$tmp/propose.txt"; do
   if grep -Eiq 'symphony|web-ui-(build|e2e|desktop)|electron|playwright|impeccable' "$output"; then

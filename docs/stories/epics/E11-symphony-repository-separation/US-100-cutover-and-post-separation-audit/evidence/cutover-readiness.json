@@ -1,0 +1,219 @@
+{
+  "schema": "e11-us100-cutover-readiness-v1",
+  "symphony": {
+    "tag": "symphony-v0.1.1",
+    "source_commit": "2f0b257a0b145287c4b3b9e254fea5eca454c228",
+    "archive_platform": "mac-arm64",
+    "archive_sha256": "3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7"
+  },
+  "harness": {
+    "initial_protocol": {
+      "tag": "harness-cli-v0.1.14",
+      "source_commit": "d2f89eeabe8d01df95fd19cd6ba981b01a71730f",
+      "tag_peeled_commit": "d2f89eeabe8d01df95fd19cd6ba981b01a71730f",
+      "release_verified": true,
+      "published_at": "2026-07-12T03:19:27Z",
+      "release_url": "https://github.com/hoangnb24/repository-harness/releases/tag/harness-cli-v0.1.14",
+      "release_metadata_sha256": "b7c1da4a8ec429c8d9c75b5ea991cd0129f8c866ec2e82d550699da6f35068b0",
+      "archives": [
+        {
+          "platform": "linux-arm64",
+          "sha256": "8828d624075fbae2f44b6f57ac651bdacb2e7c60ed0cc15853b9481b3edf0161",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "linux-x64",
+          "sha256": "d2551d32490d0af78f8eb387d8854771ebfcde2260b068539384592668cc54a6",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "mac-arm64",
+          "sha256": "0adcd5360cd636c189fe0cd958e5b73261f7012a4e43631f08c61269c785caf9",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "mac-x64",
+          "sha256": "d0ee0b6b9f702eb87824e96b42d7a8382012b542a076e8ce2d0b1bb8d6201168",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "windows-x64",
+          "sha256": "abd5a4176d52b3576c66932f44f377d2667fba409011de145044f425fd0a82ca",
+          "verified": true,
+          "sidecar_verified": true
+        }
+      ]
+    },
+    "cleaned_core": {
+      "tag": "harness-cli-v0.1.15",
+      "source_commit": "9a4387fafa2e471beb517fc979d3fac3d01a9609",
+      "tag_peeled_commit": "9a4387fafa2e471beb517fc979d3fac3d01a9609",
+      "release_verified": true,
+      "published_at": "2026-07-12T15:22:33Z",
+      "release_url": "https://github.com/hoangnb24/repository-harness/releases/tag/harness-cli-v0.1.15",
+      "release_metadata_sha256": "046cbfd5392c09e13a64b9e4d1f668101c69f27fbef467504934bde2b66832a1",
+      "archives": [
+        {
+          "platform": "linux-arm64",
+          "sha256": "4e61fca89015f25c930d0baf1b0bcacb49649b87c46619b18a12c03a9c159ff6",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "linux-x64",
+          "sha256": "7b26070fd4dd4534e665e23ff8be7b6d338015146e24deff5165bade0283fee0",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "mac-arm64",
+          "sha256": "006a098acc9c013fb3556d7a37fb266f7a6b8b6b11e5506a57ff2c9a26c3b5d3",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "mac-x64",
+          "sha256": "5b2ec9893b4247ed159314c73bc7110de0a0158750cf75b37a71baec88c2402c",
+          "verified": true,
+          "sidecar_verified": true
+        },
+        {
+          "platform": "windows-x64",
+          "sha256": "086d9acaacf01998609838612a993740c035a1f486cff6efc04a5047b16c8d5e",
+          "verified": true,
+          "sidecar_verified": true
+        }
+      ]
+    }
+  },
+  "contracts": {
+    "initial_protocol": {
+      "capabilities": [
+        "changesets.apply.v1",
+        "changesets.status-sha.v1",
+        "isolated-db-snapshot.v1",
+        "isolated-db.v1",
+        "semantic-operation-log.v1",
+        "stories.read.v1",
+        "stories.write.v1",
+        "story-dependencies.read-write.v1",
+        "story-hierarchy.read-write.v1",
+        "work-graph.read.v1"
+      ],
+      "cli_version": "0.1.14",
+      "database_schema_version": 13,
+      "database_state": "current",
+      "protocol_version": 1,
+      "required_environment_variables": [
+        "HARNESS_DB_PATH"
+      ],
+      "schema_maximum": 13,
+      "schema_minimum": 1
+    },
+    "cleaned_core": {
+      "capabilities": [
+        "changesets.apply.v1",
+        "changesets.status-sha.v1",
+        "isolated-db-snapshot.v1",
+        "isolated-db.v1",
+        "semantic-operation-log.v1",
+        "stories.read.v1",
+        "stories.write.v1",
+        "story-dependencies.read-write.v1",
+        "story-hierarchy.read-write.v1",
+        "work-graph.read.v1"
+      ],
+      "cli_version": "0.1.15",
+      "database_schema_version": 13,
+      "database_state": "current",
+      "protocol_version": 1,
+      "required_environment_variables": [
+        "HARNESS_DB_PATH"
+      ],
+      "schema_maximum": 13,
+      "schema_minimum": 1
+    }
+  },
+  "smokes": {
+    "initial_protocol": {
+      "status": "pass",
+      "symphony_archive_sha256": "3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7",
+      "harness_platform": "mac-arm64",
+      "harness_cli_sha256": "0adcd5360cd636c189fe0cd958e5b73261f7012a4e43631f08c61269c785caf9",
+      "output_sha256": "4317a04103de946de88352a9ca3b119c59d33620ebeb13adc55aa83ec341700d",
+      "run_id": "run_1783871477476081000_81235_0"
+    },
+    "cleaned_core": {
+      "status": "pass",
+      "symphony_archive_sha256": "3bc2c669e4da9a30cec983835f0c511ea5adc48e1f76980dded768170295ffa7",
+      "harness_platform": "mac-arm64",
+      "harness_cli_sha256": "006a098acc9c013fb3556d7a37fb266f7a6b8b6b11e5506a57ff2c9a26c3b5d3",
+      "output_sha256": "e652bae16556341ad9727b0d0e478c37a952109ecf30d8ee1fe9eb766f882eed",
+      "run_id": "run_1783871481013956000_81655_0"
+    }
+  },
+  "clean_harness_install": {
+    "status": "pass",
+    "tag": "harness-cli-v0.1.15",
+    "output_sha256": "08a6a534c67310dd4c6dd0ed6f5e5963d9f1b86aba9b8b251922d71cbbc1581a"
+  },
+  "canonical_ownership_audit": {
+    "status": "pass",
+    "output_sha256": "ea9541e4b96a4dc9b621e41fbd57aaec07522f87762d0cabbcbc3fe7f47b470d",
+    "commands": [
+      "matrix",
+      "backlog",
+      "tools",
+      "audit",
+      "improvement-health",
+      "propose"
+    ]
+  },
+  "runtime_disposition": {
+    "status": "complete",
+    "reviewed": true,
+    "manifest_sha256": "9fe6edd6b963026b56a88a2f76858c03f88bc2d5d0a0b6bc30760e742a304cea"
+  },
+  "evidence_files": [
+    {
+      "kind": "clean_install",
+      "path": "proof/clean-install.json",
+      "sha256": "24da785e01879a39552f2e80f471dc9387afdceadd1a54d60ee8e220e9298486"
+    },
+    {
+      "kind": "cleaned_contract",
+      "path": "proof/cleaned-contract.json",
+      "sha256": "2e18f24443d46acc9d8639186bb5f1267eeafe5bc5a85714637462793ce94e71"
+    },
+    {
+      "kind": "cleaned_smoke",
+      "path": "proof/cleaned-smoke.json",
+      "sha256": "e652bae16556341ad9727b0d0e478c37a952109ecf30d8ee1fe9eb766f882eed"
+    },
+    {
+      "kind": "initial_contract",
+      "path": "proof/initial-contract.json",
+      "sha256": "1cf1d7e2a87674b6c95a1d55fbf06726958594c681dcc7e28297e2611da1c1ac"
+    },
+    {
+      "kind": "initial_smoke",
+      "path": "proof/initial-smoke.json",
+      "sha256": "4317a04103de946de88352a9ca3b119c59d33620ebeb13adc55aa83ec341700d"
+    },
+    {
+      "kind": "ownership_audit",
+      "path": "proof/ownership-audit.json",
+      "sha256": "ea9541e4b96a4dc9b621e41fbd57aaec07522f87762d0cabbcbc3fe7f47b470d"
+    },
+    {
+      "kind": "runtime_disposition",
+      "path": "proof/runtime-disposition.json",
+      "sha256": "33c48309a4e0497eef81902bc3c3f79e124a99eb3c22340fd9c65b4dca3b23fe"
+    }
+  ],
+  "recorded_at": "2026-07-12T15:54:50Z"
+}

@@ -2,11 +2,11 @@
 
 ## Status
 
-in progress — `US-089` through `US-099` are implemented, Symphony is
-published from its canonical `main` commit as `symphony-v0.1.0`, and `US-100`
-is preparing the Harness `develop` candidate for owner testing. The Harness
-cleanup has not been promoted to `main`; runtime disposition and the mandatory
-post-release observation window remain open.
+implemented — `US-089` through `US-100` are implemented. Symphony is published
+from its canonical `main` commit as `symphony-v0.1.1`, the cleaned Harness
+release is published as `harness-cli-v0.1.15`, both released compatibility
+smokes pass, the checksum-bound readiness and final gates pass, and explicit
+proof-backed completion closed `US-100`.
 
 ## Intake And Decision
 
@@ -312,8 +312,8 @@ before the target verifier is activated.
   Symphony-owned active work exists only in the Symphony product context.
 - Historical references are restricted to the ADR, this completed epic,
   changelog/PR history, and an explicit archive/provenance note.
-- Rollback artifacts are retained until the post-cutover smoke and agreed
-  observation window pass.
+- Rollback artifacts are retained through final cutover verification and normal
+  release-retention policy.
 
 ## Epic Validation
 

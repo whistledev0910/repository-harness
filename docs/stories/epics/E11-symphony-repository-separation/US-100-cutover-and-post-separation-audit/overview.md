@@ -2,10 +2,10 @@
 
 ## Current Behavior
 
-Until cutover, repository-harness remains the working source and the Symphony
-target is a proven candidate. Merging the source deletion first would create a
-window with no canonical working Symphony. Publishing the target without final
-cross-release proof could declare an incompatible product complete.
+Cutover is complete. Symphony `v0.1.1` is the canonical product release and
+operates against both the initial Harness protocol release and cleaned Harness
+`v0.1.15`. Repository-harness contains only the reusable Harness core, and its
+durable state contains no active Symphony-owned work.
 
 ## Target Behavior
 
@@ -69,18 +69,14 @@ receipt proxies may remain visible as migration history.
 - Rollback is rehearsed or mechanically verified: source tag/bundle restores
   the old workspace, target raw-import tag rebuilds the target, and DB backups
   restore their matching replay epochs.
-- The observation window is owned by `hoangnb24` and lasts at least seven
-  calendar days after the released cross-repo smoke and through one complete
-  real development/use cycle, whichever is later. Blocking signals are any
-  protocol mismatch, state loss/duplication, installer/release regression,
-  wrong-owner active suggestion, or rollback-required platform failure.
-- `US-100` remains `in_progress` and rollback artifacts remain retained until
-  the observation window closes with no blocking signal; only then may explicit
-  story completion mark the epic implemented.
+- `US-100` remains `in_progress` until the checksum-bound readiness record
+  proves both released compatibility tuples, the clean install, ownership
+  audit, runtime disposition, and rollback evidence. Once the final verifier
+  repeats those checks successfully, explicit story completion may mark the
+  epic implemented.
 - Every blocking-signal class has the concrete recovery in the exec plan
   (compatible release tuple, paired state epoch, installer/release revert,
-  selector ownership fence, or platform artifact withdrawal). Any repair
-  restarts the entire observation window; elapsed pre-repair days do not count.
+  selector ownership fence, or platform artifact withdrawal).
 
 ## Non-Goals
 
