@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-07-21 - PR #52
+
+- feat(installer): make CLI an optional compatibility profile (@hoangnb24)
+- Merge commit: `5d31cee1f98b161c0b1124c4ff4a1024d94f2f94`
+- Harness CLI release: not required
+- Changed files: 23 total (first 20 shown)
+  - `README.md`
+  - `docs/README.md`
+  - `docs/compatibility/README.md`
+  - `docs/decisions/0019-repository-centered-default-workflow.md`
+  - `docs/decisions/0020-installation-profiles-and-knowledge-boundaries.md`
+  - `docs/decisions/README.md`
+  - `docs/plans/README.md`
+  - `docs/plans/completed/README.md`
+  - `docs/plans/completed/phase-2-knowledge-boundary-and-payload-reduction.md`
+  - `docs/product/installation-profiles.md`
+  - `docs/provenance/README.md`
+  - `scripts/README.md`
+  - `scripts/harness-cli-install-files.txt`
+  - `scripts/harness-install-files.txt`
+  - `scripts/install-harness.ps1`
+  - `scripts/install-harness.sh`
+  - `scripts/test-install-harness-cli-upgrade.sh`
+  - `tests/docs/test-doc-contracts.sh`
+  - `tests/installer/assert-agent-authority-contract.sh`
+  - `tests/installer/assert-consumer-changeset-trackable.sh`
+  - _… 3 additional file(s) omitted from this entry._
+
 ## 2026-07-20 - PR #51
 
 - feat(workflow): adopt repository-centered default workflow (@hoangnb24)
