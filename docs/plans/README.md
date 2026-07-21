@@ -33,7 +33,9 @@ or validation requirements. Keep local implementation choices in the plan.
 
 ## Active Plans
 
-No active execution plans are currently indexed.
+- `active/phase-2-knowledge-boundary-and-payload-reduction.md`: separate the
+  small repository-centered core from the optional CLI compatibility bundle,
+  upstream-only material, and historical evidence without destructive removal.
 
 ## Completed Plans
 
