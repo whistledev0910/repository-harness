@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-07-21 - PR #53
+
+- docs(harness): establish Phase 3 application-legibility evidence (@hoangnb24)
+- Merge commit: `225987a250ba522c307c0a4ed19f30d9f146a84e`
+- Harness CLI release: not required
+- Changed files: 19 total
+  - `AGENTS.md`
+  - `PHASE3.md`
+  - `PHASE4.md`
+  - `PHASE5.md`
+  - `docs/README.md`
+  - `docs/WORKFLOW.md`
+  - `docs/compatibility/README.md`
+  - `docs/compatibility/phase-3-active-observability-legacy.md`
+  - `docs/decisions/0020-installation-profiles-and-knowledge-boundaries.md`
+  - `docs/decisions/0021-consumer-first-application-legibility-phase.md`
+  - `docs/decisions/README.md`
+  - `docs/plans/completed/README.md`
+  - `docs/plans/completed/phase-3-decision-boundary-replay.md`
+  - `docs/plans/completed/phase-3-durable-state-publication.md`
+  - `docs/plans/completed/phase-3-e-inna-brain-application-legibility-pilot.md`
+  - `scripts/agent-harness-block.md`
+  - `tests/docs/test-doc-contracts.sh`
+  - `tests/evals/test-repository-workflow.sh`
+  - `tests/installer/assert-agent-authority-contract.sh`
+
 ## 2026-07-21 - PR #52
 
 - feat(installer): make CLI an optional compatibility profile (@hoangnb24)
