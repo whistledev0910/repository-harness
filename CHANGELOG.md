@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-07-21 - PR #58
+
+- Isolate core release artifacts (@hoangnb24)
+- Merge commit: `e5470216aafe441197ace9f34365e398be57a0b4`
+- Harness CLI release: not required
+- Harness core candidate: `harness-v0.1.3` (publication requires platform proof)
+- Changed files: 7 total
+  - `.github/workflows/harness-release.yml`
+  - `scripts/harness-release-changed.sh`
+  - `scripts/validate-premerge.sh`
+  - `scripts/verify-harness-release-assets.sh`
+  - `tests/maintenance/test-harness-release-classification.sh`
+  - `tests/release/test-harness-release-asset-inventory.sh`
+  - `tests/release/test-harness-release-workflow-contract.sh`
+
 ## 2026-07-21 - PR #57
 
 - Fix release verification bootstrap (@hoangnb24)
