@@ -88,7 +88,92 @@ Every artifact must have one primary class and audience.
 | Upstream-only | `repository-harness` maintainers | In this source repository | No |
 | Historical | Provenance and forensic review | Through a historical index | No |
 
-The target default payload is intentionally small. Candidate core paths are:
+Decision `0020` makes these boundaries lasting product behavior. The following
+classification covers every path in the pre-Phase-2 installer manifest plus
+the separately discovered schema set.
+
+### Core Classification
+
+| Path | Audience and reason |
+| --- | --- |
+| `AGENTS.md` | Consumer agents; compact entry map and authority boundary. |
+| `docs/WORKFLOW.md` | Consumer agents and humans; canonical default workflow. |
+| `docs/README.md` | Consumers; compact current documentation map. |
+| `docs/product/README.md` | Consumers; generic location and update rule for real product truth. |
+| `docs/plans/README.md` | Consumers; durable-plan selection and lifecycle. |
+| `docs/plans/active/README.md` | Consumers; active-plan directory contract. |
+| `docs/plans/completed/README.md` | Consumers; retained-plan directory contract. |
+| `docs/decisions/README.md` | Consumers; lasting-decision contract and index boundary. |
+| `docs/templates/decision.md` | Consumers; template required by the decision contract. |
+| `docs/templates/exec-plan.md` | Consumers; template required by the durable-plan workflow. |
+
+### Compatibility Classification
+
+| Path | Audience and reason |
+| --- | --- |
+| `docs/FEATURE_INTAKE.md` | Explicit CLI users; intake lifecycle semantics. |
+| `docs/GLOSSARY.md` | Explicit CLI users; legacy control-plane terminology. |
+| `docs/HARNESS_AUDIT.md` | Explicit CLI users; audit command semantics. |
+| `docs/HARNESS_BACKLOG.md` | Explicit CLI users; backlog command semantics. |
+| `docs/HARNESS_COMPONENTS.md` | Explicit CLI users; implemented control-plane component map. |
+| `docs/HARNESS_MATURITY.md` | Explicit CLI users; legacy maturity model. |
+| `docs/IMPROVEMENT_PROTOCOL.md` | Explicit CLI users; proposal and intervention lifecycle. |
+| `docs/TEST_MATRIX.md` | Explicit CLI users; story proof-matrix semantics. |
+| `docs/TOOL_REGISTRY.md` | Explicit CLI users; tool registry semantics. |
+| `docs/TRACE_SPEC.md` | Explicit CLI users; trace and scoring semantics. |
+| `docs/contracts/harness-orchestration-v1.md` | External orchestrators; versioned process contract. |
+| `docs/stories/README.md` | Explicit CLI users; legacy story storage and discovery. |
+| `docs/stories/backlog.md` | Explicit CLI users; legacy file-backed backlog reference. |
+| `docs/templates/spec-intake.md` | Explicit CLI users; compatibility intake template. |
+| `docs/templates/story.md` | Explicit CLI users; compatibility story template. |
+| `docs/templates/validation-report.md` | Explicit CLI users; compatibility proof report. |
+| `docs/templates/high-risk-story/design.md` | Explicit CLI users; legacy high-risk packet. |
+| `docs/templates/high-risk-story/execplan.md` | Explicit CLI users; legacy high-risk packet. |
+| `docs/templates/high-risk-story/overview.md` | Explicit CLI users; legacy high-risk packet. |
+| `docs/templates/high-risk-story/validation.md` | Explicit CLI users; legacy high-risk packet. |
+| `scripts/bootstrap-harness.sh` | CLI users on Unix; creates/migrates local state. |
+| `scripts/bootstrap-harness.ps1` | CLI users on Windows; creates/migrates local state. |
+| `scripts/harness-cli-release-tag` | CLI users and installers; pins the default artifact tuple. |
+| `scripts/schema/*.sql` | CLI runtime; complete discovered migration history. |
+| generated `.gitignore` rules | CLI runtime; keep local databases and downloaded binaries untracked. |
+| platform CLI binary | CLI users; checksum-verified compatibility executable. |
+
+### Upstream-Only Classification
+
+| Path | Audience and reason |
+| --- | --- |
+| `README.md` | Harness maintainers; describes this Rust product and distribution. |
+| `docs/ARCHITECTURE.md` | Harness maintainers; mixes upstream CLI architecture with consumer discovery guidance. |
+| `docs/CONTEXT_RULES.md` | Harness maintainers; extended design guidance beyond the minimal installed workflow. |
+| `docs/HARNESS.md` | Harness maintainers; full product model and compatibility boundary. |
+| `docs/WORKTREE_CONFLICTS.md` | Harness maintainers; source-state diagnosis for this repository. |
+| `docs/demo/README.md` | Harness maintainers; upstream demonstration material. |
+| `docs/decisions/0019-repository-centered-default-workflow.md` | Harness maintainers; records this product's workflow migration. |
+| `docs/product/installation-profiles.md` | Harness maintainers; installer product contract and profile inventory. |
+| `scripts/README.md` | Harness maintainers; build, release, validation, and compatibility operations. |
+| `scripts/agent-harness-block.md` | Installers; canonical source fragment, consumed but not installed. |
+| `scripts/claude-harness-block.md` | Installers; canonical source fragment, consumed but not installed. |
+| `scripts/materialize-core-state.sh` | Harness maintainers; restores this source repository's tracked baseline. |
+| `scripts/materialize-core-state.ps1` | Harness maintainers; restores this source repository's tracked baseline. |
+| `scripts/publish-core-snapshot.sh` | Harness maintainers; publishes this source repository's baseline. |
+| `scripts/verify-core-snapshot.sh` | Harness maintainers; validates this source repository's baseline. |
+| `scripts/verify-materialized-core-parity.sh` | Harness maintainers; checks this source repository's baseline replay. |
+| `.gitignore` | Harness maintainers; source-repository ignore policy, replaced by generated CLI rules for consumers. |
+
+### Historical Classification
+
+| Path | Audience and reason |
+| --- | --- |
+| `docs/decisions/0001-harness-first-development.md` | Provenance; superseded mandatory Harness-first workflow. |
+| `docs/decisions/0002-post-spec-product-lifecycle.md` | Provenance; superseded product lifecycle. |
+| `docs/decisions/0003-generic-spec-intake-harness.md` | Provenance; superseded intake-centered default. |
+| `docs/decisions/0004-sqlite-durable-layer.md` | Compatibility provenance; SQLite ownership decision. |
+| `docs/decisions/0005-prebuilt-rust-harness-cli.md` | Compatibility provenance; binary distribution decision. |
+| `docs/decisions/0006-phase-4-benchmark-triage.md` | Compatibility provenance; legacy benchmark behavior. |
+| `docs/decisions/0007-improvement-proposal-rules.md` | Compatibility provenance; legacy proposal behavior. |
+| `docs/decisions/0011-reproducible-core-state.md` | Compatibility provenance; source-state reconstruction decision. |
+
+The target default payload is intentionally small. The reviewed core paths are:
 
 ```text
 AGENTS.md
@@ -99,12 +184,13 @@ docs/plans/README.md
 docs/plans/active/README.md
 docs/plans/completed/README.md
 docs/decisions/README.md
+docs/templates/decision.md
 docs/templates/exec-plan.md
 ```
 
-The classification workstream must decide whether a shortened generic
-`docs/HARNESS.md` belongs in core. It must not assume that the upstream root
-`README.md` or current generic `docs/ARCHITECTURE.md` is consumer product truth.
+The full `docs/HARNESS.md`, upstream root `README.md`, and current
+`docs/ARCHITECTURE.md` are upstream product truth rather than generic consumer
+truth, so they are not members of the core profile.
 
 The optional CLI bundle must be complete rather than binary-only. At minimum it
 must account for:
@@ -383,8 +469,10 @@ replacement must prove the same behaviors rather than merely rename a check.
       legibility or agent behavior.
 - [x] Define the epic outcome, boundaries, migration order, risks, and initial
       acceptance criteria.
-- [ ] P2-01: reconcile lasting direction and classify artifacts.
-- [ ] P2-02: define the minimal core payload.
+- [x] P2-01: decision `0020` reconciles lasting direction and every previous
+      installed path has a primary classification.
+- [x] P2-02: the reviewed ten-file minimal core and complete CLI transitive
+      boundary are defined above.
 - [ ] P2-03: add the reversible core-only preview.
 - [ ] P2-04: make the CLI an atomic optional bundle.
 - [ ] P2-05: make core-only the default after the compatibility window.
@@ -403,6 +491,12 @@ replacement must prove the same behaviors rather than merely rename a check.
 - 2026-07-21: Classification and a reversible preview precede changing the
   installer default.
 - 2026-07-21: Historical evidence is indexed and demoted before any relocation.
+- 2026-07-21: `docs/HARNESS.md`, the root README, and `docs/ARCHITECTURE.md`
+  remain upstream-only because they describe or mix in this repository's Rust
+  product rather than a consumer application's accepted truth.
+- 2026-07-21: The core includes `docs/templates/decision.md` in addition to the
+  initial candidate list because the installed decision index directly requires
+  that template.
 
 ## Result
 

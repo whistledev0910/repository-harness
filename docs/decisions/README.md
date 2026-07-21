@@ -27,6 +27,7 @@ consumer payload.
 | [0007](./0007-improvement-proposal-rules.md) | Compatibility | Improvement Proposal Rules |
 | [0011](./0011-reproducible-core-state.md) | Accepted | Reproducible Core State |
 | [0019](./0019-repository-centered-default-workflow.md) | Active | Repository-Centered Default Workflow |
+| [0020](https://github.com/hoangnb24/repository-harness/blob/main/docs/decisions/0020-installation-profiles-and-knowledge-boundaries.md) | Active | Installation Profiles And Knowledge Boundaries |
 
 Add a decision when:
 

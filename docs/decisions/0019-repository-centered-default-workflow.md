@@ -115,10 +115,11 @@ Tradeoffs:
 
 ## Follow-Up
 
-- Invest next in Phase 2 application legibility: worktree-local
-  execution, direct application interaction, logs, metrics, and focused
-  validation discovery.
-- Decide later whether orchestration, observability evaluation, and historical
-  control-plane compatibility become separate optional packages.
+- Decision `0020` defines Phase 2 as installation-payload reduction and an
+  explicit optional CLI compatibility bundle. This makes the repository-centered
+  authority change physically true without claiming unobserved agent outcomes.
+- Defer application-legibility investment—worktree-local execution, direct
+  application interaction, logs, metrics, and focused validation discovery—until
+  a real application provides observable evidence.
 - Delete control-plane implementation only under a later decision supported by
   a compatibility and usage window.
